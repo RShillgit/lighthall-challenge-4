@@ -144,23 +144,64 @@ function App() {
     }
   }
 
-  // Gets users longitude and latitude
-  const getUserLocation = () => {
+  
+  
+  //autocomplete location
+  const locationInputRef = useRef(null);
+
+  useEffect((user) => {
+    const autocomplete = new window.google.maps.places.Autocomplete(locationInputRef.current);
+  
+    autocomplete.addListener("place_changed", () => {
+      const place = autocomplete.getPlace();
+      if (!place.geometry) return;
+      locationCoordinateChoice.current.user2.latitude = place.geometry.location.lat();
+      locationCoordinateChoice.current.user2.longitude = place.geometry.location.lng();
+    });
+  
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          locationCoordinateChoice.current.user1.latitude = latitude;
-          locationCoordinateChoice.current.user1.longitude = longitude;
+          const location = locationCoordinateChoice.current[user];
+          location.latitude = latitude;
+          location.longitude = longitude;
         },
-        (error) => {
-          console.log(error);
-        }
+        (error) => console.log(error)
       );
-    } else {
-      console.log("Geolocation is not supported by this browser.");
     }
-  };  
+  
+  }, [locationInputRef]);
+
+  // Gets users longitude and latitude
+  const getUserLocation = (user) => {
+    if (!navigator.geolocation) {
+      console.log("Geolocation is not supported by this browser.");
+      return;
+    }
+  
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        const { latitude, longitude } = position.coords;
+        const location = locationCoordinateChoice.current[user];
+        location.latitude = latitude;
+        location.longitude = longitude;
+      },
+      (error) => console.log(error)
+    );
+  
+    const autocomplete = new window.google.maps.places.Autocomplete(document.getElementById("location-input"));
+  
+    autocomplete.addListener("place_changed", () => {
+      const place = autocomplete.getPlace();
+      if (place.geometry && place.geometry.location) {
+        const location = locationCoordinateChoice.current[user];
+        location.latitude = place.geometry.location.lat();
+        location.longitude = place.geometry.location.lng();
+      }
+    });
+  };
+  
 
   // Creates input secion for each user
   const generateCredentialsSection = (user) => {
@@ -193,38 +234,43 @@ function App() {
 
 
         <label> Location:
-          <input type="text" onChange={(e) => {
-            // User1 Selection
-            if (user === 'user1') {
-              // Handle empty string
-              if (e.target.value === '') {
-                locationStringChoice.current = {
-                  ...locationStringChoice.current,
-                  user1: null
-                }
-              } else {
-                locationStringChoice.current = {
-                  ...locationStringChoice.current,
-                  user1: e.target.value
-                }
-              }
-            }
-            // User2 Selection
-            else if (user === 'user2') {
-              // Handle empty string
-              if (e.target.value === '') {
-                locationStringChoice.current = {
-                  ...locationStringChoice.current,
-                  user2: null
-                }
-              } else {
-                locationStringChoice.current = {
-                  ...locationStringChoice.current,
-                  user2: e.target.value
+          <input 
+            type="text" 
+            id="location-input" 
+            onChange={(e) => {
+              // User1 Selection
+              if (user === 'user1') {
+                // Handle empty string
+                if (e.target.value === '') {
+                  locationStringChoice.current = {
+                    ...locationStringChoice.current,
+                    user1: null
+                  }
+                } else {
+                  locationStringChoice.current = {
+                    ...locationStringChoice.current,
+                    user1: e.target.value
+                  }
                 }
               }
-            }
-          }}/>
+              // User2 Selection
+              else if (user === 'user2') {
+                // Handle empty string
+                if (e.target.value === '') {
+                  locationStringChoice.current = {
+                    ...locationStringChoice.current,
+                    user2: null
+                  }
+                } else {
+                  locationStringChoice.current = {
+                    ...locationStringChoice.current,
+                    user2: e.target.value
+                  }
+                }
+              }
+            }}
+            ref={locationInputRef} // add a ref to access the DOM node later
+          />
           <button onClick={getUserLocation}>Use Current Location</button>
         </label>
 
