@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react'
+import cuisineTypes from "./components/cuisineType"
 import './styles.css';
 
 function App() {
@@ -154,23 +155,29 @@ function App() {
     return (
       <div className='userCredentials'>
         <label> Cuisine Type:
-            <input type="text" onChange={(e) => {
-              // User1 Selection
-              if (user === 'user1') {
-                cuisineChoice.current = {
-                  ...cuisineChoice.current,
-                  user1: e.target.value
-                }
+          <select onChange={(e) => {
+            // User1 Selection
+            if (user === 'user1') {
+              cuisineChoice.current = {
+                ...cuisineChoice.current,
+                user1: e.target.value
               }
-              // User2 Selection
-              else if (user === 'user2') {
-                cuisineChoice.current = {
-                  ...cuisineChoice.current,
-                  user2: e.target.value
-                }
+            }
+            // User2 Selection
+            else if (user === 'user2') {
+              cuisineChoice.current = {
+                ...cuisineChoice.current,
+                user2: e.target.value
               }
-            }}/>
+            }
+          }}>
+            <option value="">Any</option>
+            {cuisineTypes.map((type, index) => (
+              <option key={index} value={type}>{type}</option>
+            ))}
+          </select>
         </label>
+
 
         <label> Location:
           <input type="text" onChange={(e) => {
