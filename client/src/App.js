@@ -14,6 +14,7 @@ function App() {
     user2: null
   });
 
+  /*
   const locationCoordinateChoice = useRef({
     user1: {
       longitude: null,
@@ -23,6 +24,12 @@ function App() {
       longitude: null,
       latitude: null,
     }
+  })
+  */
+
+  const locationCoordinateChoice = useRef({
+    longitude: null,
+    latitude: null,
   })
 
   const radiusChoice = useRef({
@@ -143,29 +150,40 @@ function App() {
       formattedRating
     }
   }
-
   
   
   //autocomplete location
   const locationInputRef = useRef(null);
 
-  useEffect((user) => {
+
+  useEffect(() => {
     const autocomplete = new window.google.maps.places.Autocomplete(locationInputRef.current);
+
+    console.log(locationInputRef.current)
   
     autocomplete.addListener("place_changed", () => {
       const place = autocomplete.getPlace();
       if (!place.geometry) return;
-      locationCoordinateChoice.current.user2.latitude = place.geometry.location.lat();
-      locationCoordinateChoice.current.user2.longitude = place.geometry.location.lng();
+      //locationCoordinateChoice.current.user2.latitude = place.geometry.location.lat();
+      //locationCoordinateChoice.current.user2.longitude = place.geometry.location.lng();
+      locationCoordinateChoice.current.latitude = place.geometry.location.lat();
+      locationCoordinateChoice.current.longitude = place.geometry.location.lng();
     });
   
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-          const location = locationCoordinateChoice.current[user];
-          location.latitude = latitude;
-          location.longitude = longitude;
+          //const location = locationCoordinateChoice.current[user];
+          
+          locationCoordinateChoice.current = {
+            longitude: longitude,
+            latitude: latitude
+          }
+          console.log(locationCoordinateChoice.current)
+
+          //location.latitude = latitude;
+          //location.longitude = longitude;
         },
         (error) => console.log(error)
       );
@@ -179,13 +197,19 @@ function App() {
       console.log("Geolocation is not supported by this browser.");
       return;
     }
-  
+    
     navigator.geolocation.getCurrentPosition(
       (position) => {
         const { latitude, longitude } = position.coords;
-        const location = locationCoordinateChoice.current[user];
-        location.latitude = latitude;
-        location.longitude = longitude;
+        //const location = locationCoordinateChoice.current[user];
+        //location.latitude = latitude;
+        //location.longitude = longitude;
+
+        locationCoordinateChoice.current = {
+          longitude: longitude,
+          latitude: latitude
+        }
+        console.log(locationCoordinateChoice.current)
       },
       (error) => console.log(error)
     );
@@ -195,9 +219,14 @@ function App() {
     autocomplete.addListener("place_changed", () => {
       const place = autocomplete.getPlace();
       if (place.geometry && place.geometry.location) {
-        const location = locationCoordinateChoice.current[user];
-        location.latitude = place.geometry.location.lat();
-        location.longitude = place.geometry.location.lng();
+        //const location = locationCoordinateChoice.current[user];
+        //location.latitude = place.geometry.location.lat();
+        //location.longitude = place.geometry.location.lng();
+        console.log(locationCoordinateChoice.current)
+        locationCoordinateChoice.current = {
+          longitude: place.geometry.location.lng(),
+          latitude: place.geometry.location.lat()
+        }
       }
     });
   };
@@ -231,7 +260,6 @@ function App() {
             ))}
           </select>
         </label>
-
 
         <label> Location:
           <input 
@@ -271,7 +299,7 @@ function App() {
             }}
             ref={locationInputRef} // add a ref to access the DOM node later
           />
-          <button onClick={getUserLocation}>Use Current Location</button>
+          <button type='button' onClick={getUserLocation}>Use Current Location</button>
         </label>
 
         <label> Distance Within:
@@ -350,9 +378,9 @@ function App() {
 
         <label> Open Now:
           <select>
-              <option value="">Any</option>
-              <option value="Yes">Yes</option>
-              <option value="No">No</option>
+            <option value="">Any</option>
+            <option value="Yes">Yes</option>
+            <option value="No">No</option>
           </select>
               
         </label>
