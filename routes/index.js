@@ -20,12 +20,16 @@ router.get('/', function(req, res, next) {
 https://docs.developer.yelp.com/reference/v3_business_search
 */
 
-router.get('/api', (req, res) => {
+router.post('/api', (req, res) => {
+
+  console.log(req.body)
+
+  /*
   sdk.v3_business_search({
     location: 'NYC', 
     term: 'restaurants',
     radius: 8000, // RADIUS MUST BE IN METERS -> 8000m = ~5miles
-    open_now: true,
+    open_now: true, // CAN ALSO USE open_at with unix time 
     // attributes: Lots of stuff from outdoor_seating to restaurants_delivery, etc.
     sort_by: 'best_match', // best_match, rating, review_count, distance
     limit: '5' // Max 50
@@ -36,6 +40,7 @@ router.get('/api', (req, res) => {
   .catch(err => {
     return res.status(500).json({success: false, err})
   });
+  */
 })
 
 module.exports = router;

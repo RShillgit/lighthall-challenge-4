@@ -1,8 +1,15 @@
+/* Credentials Input Section */
 .credentialsInputContainer {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
     border: 1px solid black;
     padding: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+#credentialsForm {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
 }
 
 .userCredentials {
