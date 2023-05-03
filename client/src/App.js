@@ -290,7 +290,12 @@ function App() {
         </label>
 
         <label> Open Now:
-          <input type="text" name=''/>
+          <select>
+              <option value="">Any</option>
+              <option value="Yes">Yes</option>
+              <option value="No">No</option>
+          </select>
+              
         </label>
 
         <label> Price:
