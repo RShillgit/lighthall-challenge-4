@@ -146,8 +146,21 @@ function App() {
 
   // Gets users longitude and latitude
   const getUserLocation = () => {
-    
-  }
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+          locationCoordinateChoice.current.user1.latitude = latitude;
+          locationCoordinateChoice.current.user1.longitude = longitude;
+        },
+        (error) => {
+          console.log(error);
+        }
+      );
+    } else {
+      console.log("Geolocation is not supported by this browser.");
+    }
+  };  
 
   // Creates input secion for each user
   const generateCredentialsSection = (user) => {
