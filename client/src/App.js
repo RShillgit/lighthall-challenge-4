@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import cuisineTypes from "./components/cuisineType"
 import './styles.css';
 
-function App() {
+function App(props) {
 
   const cuisineChoice = useRef({
     user1: null,
@@ -54,6 +54,13 @@ function App() {
   const [restaurantSuggestions , setRestaurantSuggestions] = useState();
   const [restaurantsDisplay, setRestaurantsDisplay] = useState();
 
+  // On Mount
+  useEffect(() => {
+    // Check for restaurants in local storage
+    const savedRestaurants = JSON.parse(localStorage.getItem('restaurants'));
+    setRestaurantSuggestions(savedRestaurants);
+  }, [])
+
   // Anytime locationCoordinateChoice changes rerender inputs
   useEffect(() => {
     setUserInputsForm(
@@ -85,12 +92,14 @@ function App() {
   // User inputs form submit
   const generateRestaurants = (e) => {
     e.preventDefault();
+
+    localStorage.removeItem('restaurants');
     
     // Prepare user data for API
     const formattedData = prepareUserData();
     console.log(formattedData);
 
-    fetch(`http://localhost:8000/api`, {
+    fetch(`${props.serverURL}/api`, {
       method: 'POST',
       headers: { "Content-Type": "application/json" },
       mode: 'cors',
@@ -100,6 +109,7 @@ function App() {
     .then(data => {
       console.log(data)
       if (data.success) {
+        localStorage.setItem('restaurants', JSON.stringify(data.restaurants));
         setRestaurantSuggestions(data.restaurants)
       }
     })
@@ -479,10 +489,10 @@ function App() {
         <div className='restaurantSuggestionsContainer'>
           {restaurantSuggestions.map(restaurant => {
             return (
-              <div className='individualRestaurant' key={restaurant.id}>
+              <a href={`restaurants/${restaurant.id}`} className='individualRestaurant' key={restaurant.id}>
                 <p>{restaurant.name}</p>
                 <p>Rating: {restaurant.rating}</p>
-              </div>
+              </a>
             )
             
           })}

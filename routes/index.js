@@ -124,6 +124,7 @@ router.post('/api', (req, res) => {
       })
 
       if (restaurants.length === 0) {
+        
         return res.status(200).json({success: false, error: "There are no restaurants with the given criteria"})
       }
 
