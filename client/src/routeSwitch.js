@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import App from './App';
+import NotFound from './components/notFound';
 import SingleRestaurant from './components/singleRestaurant';
 
 const RouteSwitch = () => {
@@ -12,7 +13,7 @@ const RouteSwitch = () => {
             <Routes>
                 <Route path='/' element={<App serverURL={serverURL} clientURL={clientURL}/>}/>
                 <Route path='/restaurants/:restaurantID' element={<SingleRestaurant serverURL={serverURL} clientURL={clientURL}/>} />
-                <Route path='*' />
+                <Route path='*' element={<NotFound serverURL={serverURL} clientURL={clientURL}/>} />
             </Routes>
         </BrowserRouter>
     )

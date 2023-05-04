@@ -133,4 +133,16 @@ router.post('/api', (req, res) => {
   )
 })
 
+router.get('/api/:id', (req, res) => {
+
+  sdk.v3_business_info({business_id_or_alias: req.params.id})
+  .then(({ data }) => {
+    return res.status(200).json({success: true, restaurant: data});
+  })
+  .catch(err => {
+    return res.status(500).json({success: false, err: err});
+  });
+
+})
+
 module.exports = router;
