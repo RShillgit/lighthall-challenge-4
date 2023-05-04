@@ -51,6 +51,10 @@ function App() {
   //autocomplete location
   const locationInputRef = useRef(null);
 
+  const [restaurantSuggestions , setRestaurantSuggestions] = useState();
+  const [restaurantsDisplay, setRestaurantsDisplay] = useState();
+
+  // Anytime locationCoordinateChoice changes rerender inputs
   useEffect(() => {
     setUserInputsForm(
       <>
@@ -62,6 +66,11 @@ function App() {
       </>
     )
   }, [locationCoordinateChoice])
+
+  // Anytime restaurantSuggestions change, rerender restaurants display
+  useEffect(() => {
+    setRestaurantsDisplay(allRestaurantsSection)
+  }, [restaurantSuggestions])
 
   useEffect(() => {
 
@@ -90,6 +99,9 @@ function App() {
     .then(res => res.json())
     .then(data => {
       console.log(data)
+      if (data.success) {
+        setRestaurantSuggestions(data.restaurants)
+      }
     })
     .catch(err => console.log(err))
   }
@@ -459,15 +471,37 @@ function App() {
     )
   }
 
+  // All restaurants display
+  const allRestaurantsSection = (
+    <>
+      {restaurantSuggestions
+        ?
+        <div className='restaurantSuggestionsContainer'>
+          {restaurantSuggestions.map(restaurant => {
+            return (
+              <div className='individualRestaurant' key={restaurant.id}>
+                <p>{restaurant.name}</p>
+                <p>Rating: {restaurant.rating}</p>
+              </div>
+            )
+            
+          })}
+        </div>
+        :
+        <></>
+      }
+    </>
+  )
+
   return (
     <div className="App">
       <h1>Yelp For Couples</h1> 
       
       <div className="credentialsInputContainer">
-
         {userInputsForm}
-
       </div>
+
+      {restaurantsDisplay}
     </div>
   );
 }

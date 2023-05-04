@@ -18,3 +18,14 @@
     align-items: center;
     gap: 1rem;
 }
+
+.restaurantSuggestionsContainer {
+    display: flex;
+    flex-direction: column;
+    border: 1px solid black;
+}
+.individualRestaurant {
+    margin: 8px;
+    padding: 8px;
+    border: 1px solid red;
+}
