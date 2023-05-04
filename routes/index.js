@@ -1,5 +1,6 @@
 var express = require('express');
 var router = express.Router();
+const async = require('async');
 
 // Client/App ID: 7GX4j2Oh3hQL61YdWbQvQw
 // API Key: fSxcLW2UZE5mCMllnwKp3ScxTtNq0WZtk97g8EC7JYigyFyqqox6gE2KWjYpdzkhag3UgEpcrbVOFlPa38o9_siMkhXqGYtS3sXjk0eWlMOuIB43J0pCgSa5S0ZRZHYx
@@ -22,25 +23,113 @@ https://docs.developer.yelp.com/reference/v3_business_search
 
 router.post('/api', (req, res) => {
 
-  console.log(req.body)
+  let cuisine1 = req.body.formattedData.formattedCuisines.user1;
+  let cuisine2 = req.body.formattedData.formattedCuisines.user2;
+  if(cuisine1 === null) cuisine1 = [];
+  else cuisine1 = [cuisine1.toLowerCase()];
+  if (cuisine2 === null) cuisine2 = [];
+  else cuisine2 = [cuisine2.toLowerCase()];
 
-  /*
-  sdk.v3_business_search({
-    location: 'NYC', 
-    term: 'restaurants',
-    radius: 8000, // RADIUS MUST BE IN METERS -> 8000m = ~5miles
-    open_now: true, // CAN ALSO USE open_at with unix time 
-    // attributes: Lots of stuff from outdoor_seating to restaurants_delivery, etc.
-    sort_by: 'best_match', // best_match, rating, review_count, distance
-    limit: '5' // Max 50
-  })
-  .then(({ data }) => {
-    return res.status(200).json({success: true, restaurants: data})
-  })
-  .catch(err => {
-    return res.status(500).json({success: false, err})
-  });
-  */
+  const location1 = req.body.formattedData.formattedLocations.user1;
+  const location2 = req.body.formattedData.formattedLocations.user2;
+  const radius = req.body.formattedData.formattedRadius;
+  const price = req.body.formattedData.formattedPrice;
+  const rating = req.body.formattedData.formattedRating;
+
+  async.parallel(
+    {
+      location1Search(callback) {
+        // Latitude/Longitude location
+        if (typeof(location1) === 'object') {
+          sdk.v3_business_search({
+            latitude: location1.latitude,
+            longitude: location1.longitude,
+            term: 'restaurants',
+            categories: cuisine1,
+            radius: radius,
+            price: price,
+            open_now: true, // CAN ALSO USE open_at with unix time 
+            sort_by: 'best_match',
+            limit: '5' // Max 50
+          })
+          .then(data => {
+            callback(null, data)
+          })
+        } 
+        // String location
+        else {
+          sdk.v3_business_search({
+            location: location1, 
+            term: 'restaurants',
+            categories: cuisine1,
+            radius: radius,
+            price: price,
+            open_now: true, // CAN ALSO USE open_at with unix time 
+            sort_by: 'best_match', 
+            limit: '5' // Max 50
+          })
+          .then(data => {
+            callback(null, data)
+          })
+        }
+      },
+      location2Search(callback) {
+
+        // Latitude/Longitude location
+        if (typeof(location2) === 'object') {
+          sdk.v3_business_search({
+            latitude: location2.latitude,
+            longitude: location2.longitude, 
+            term: 'restaurants',
+            categories: cuisine2,
+            radius: radius, 
+            price: price,
+            open_now: true, // CAN ALSO USE open_at with unix time 
+            sort_by: 'best_match',
+            limit: '5' // Max 50
+          })
+          .then(data => {
+            callback(null, data)
+          })
+        } 
+        // String location
+        else {
+          sdk.v3_business_search({
+            location: location2, 
+            term: 'restaurants',
+            categories: cuisine2,
+            radius: radius, 
+            price: price,
+            open_now: true, // CAN ALSO USE open_at with unix time 
+            sort_by: 'best_match', 
+            limit: '5' // Max 50
+          })
+          .then(data => {
+            callback(null, data)
+          })
+        }
+      },
+    }, (err, results) => {
+      if(err) {
+        return res.status(500).json({success: false, err: err});
+      }
+
+      // Remove duplicates
+      const restaurants = [... results.location1Search.data.businesses];
+
+      results.location2Search.data.businesses.forEach(business => {
+        if (!restaurants.some(restaurant => restaurant.id === business.id)) {
+          restaurants.push(business);
+        }
+      })
+
+      if (restaurants.length === 0) {
+        return res.status(200).json({success: false, error: "There are no restaurants with the given criteria"})
+      }
+
+      return res.status(200).json({success: true, restaurants: restaurants})
+    }
+  )
 })
 
 module.exports = router;

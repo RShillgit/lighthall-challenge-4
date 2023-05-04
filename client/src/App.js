@@ -15,8 +15,14 @@ function App() {
   });
 
   const locationCoordinateChoice = useRef({
-    longitude: null,
-    latitude: null,
+    user1: {
+      longitude: null,
+      latitude: null,
+    },
+    user2: {
+      longitude: null,
+      latitude: null,
+    }
   })
 
   const radiusChoice = useRef({
@@ -40,40 +46,32 @@ function App() {
     user2: null
   })
 
+  const [userInputsForm, setUserInputsForm] = useState();
+
   //autocomplete location
   const locationInputRef = useRef(null);
+
+  useEffect(() => {
+    setUserInputsForm(
+      <>
+        <form id='credentialsForm' onSubmit={generateRestaurants}>
+          {generateCredentialsSection('user1')}
+          {generateCredentialsSection('user2')}
+        </form>
+        <button form='credentialsForm'>Generate Restaurant</button>
+      </>
+    )
+  }, [locationCoordinateChoice])
 
   useEffect(() => {
 
     const autocompleteInputs = document.querySelectorAll('.input-location');
 
     autocompleteInputs.forEach(input => {
-      const autocomplete = new window.google.maps.places.Autocomplete(input);
-    
-      autocomplete.addListener("place_changed", () => {
-        const place = autocomplete.getPlace();
-        if (!place.geometry) return;
-        locationCoordinateChoice.current.latitude = place.geometry.location.lat();
-        locationCoordinateChoice.current.longitude = place.geometry.location.lng();
-      });
-    
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            const { latitude, longitude } = position.coords;
-            
-            locationCoordinateChoice.current = {
-              longitude: longitude,
-              latitude: latitude
-            }
-
-          },
-          (error) => console.log(error)
-        );
-      }
+      new window.google.maps.places.Autocomplete(input);
     })
-  
-  }, [locationInputRef]);
+
+  }, [userInputsForm]);
   
   // User inputs form submit
   const generateRestaurants = (e) => {
@@ -90,35 +88,40 @@ function App() {
       body: JSON.stringify({formattedData})
     })
     .then(res => res.json())
-    .then(data => console.log(data))
+    .then(data => {
+      console.log(data)
+    })
     .catch(err => console.log(err))
   }
 
   // Prepares user data to align with API format requirements
   const prepareUserData = () => {
 
-    // Format Cuisines into array of strings & handle errors
-    let formattedCuisines = null;
-    if (cuisineChoice.current.user1 && cuisineChoice.current.user2) {
-      formattedCuisines = [cuisineChoice.current.user1, cuisineChoice.current.user2];
-    }
-    else if (cuisineChoice.current.user1) {
-      formattedCuisines = [cuisineChoice.current.user1];
-    }
-    else if (cuisineChoice.current.user2) {
-      formattedCuisines = [cuisineChoice.current.user2];
-    }
-
     // Format Location & handle errors
-    // TODO: Error handling
     const locationInputs = document.querySelectorAll('.input-location');
-    const user1Location = locationInputs[0].value;
-    const user2Location = locationInputs[1].value;
+    let user1Location = locationInputs[0].value;
+    let user2Location = locationInputs[1].value;
+    if(user1Location === 'Using Current Location') user1Location = null;
+    if(user2Location === 'Using Current Location') user2Location = null;
+    
     locationStringChoice.current = {
       user1: user1Location,
       user2: user2Location,
     }
-    console.log("location",locationStringChoice.current)
+
+    let formattedLocations = {...locationStringChoice.current};
+    if (!formattedLocations.user1) {
+      formattedLocations = {
+        ...formattedLocations,
+        user1: locationCoordinateChoice.current.user1
+      }
+    }
+    if (!formattedLocations.user2) {
+      formattedLocations = {
+        ...formattedLocations,
+        user2: locationCoordinateChoice.current.user2
+      }
+    }
 
     // Format Radii into average radius & handle errors
     let userRadiiObjects = [];
@@ -137,7 +140,9 @@ function App() {
         }
       })
       radiiAverage = Math.ceil(userRadiiValues.reduce((sum, value) => (sum + value)) / userRadiiValues.length);  
-    } else radiiAverage = null;
+    } else radiiAverage = 40000; // Max Radius Value
+
+    // TODO: Format Open now
 
     // Format Price into array of integers & handle errors
     let formattedPrice = [];
@@ -148,7 +153,7 @@ function App() {
       for (let i = 1; i <= Math.max(...integerPricesArray); i++) {
         formattedPrice.push(i);
       }
-    } else formattedPrice = null;
+    } else formattedPrice = [1, 2, 3, 4];
     
     // Format Rating into object with min and max ratings & handle errors
     let userRatings = null;
@@ -174,7 +179,8 @@ function App() {
     }
 
     return {
-      formattedCuisines,
+      formattedCuisines: cuisineChoice.current,
+      formattedLocations,
       formattedRadius: radiiAverage,
       formattedPrice,
       formattedRating
@@ -183,6 +189,26 @@ function App() {
   
   // Gets users longitude and latitude
   const getUserLocation = (user) => {
+
+    // Alter input associated with this user
+    const userLocationInput = document.getElementById(`location-input-${user}`);
+    userLocationInput.value = 'Using Current Location';
+    userLocationInput.readOnly = true;
+
+    // Remove locationString for this user
+    if (user === 'user1') {
+      locationStringChoice.current = {
+        ...locationStringChoice.current,
+        user1: null
+      }
+
+    } else if (user === 'user2') {
+      locationStringChoice.current = {
+        ...locationStringChoice.current,
+        user2: null
+      }
+    }
+
     if (!navigator.geolocation) {
       console.log("Geolocation is not supported by this browser.");
       return;
@@ -192,25 +218,37 @@ function App() {
       (position) => {
         const { latitude, longitude } = position.coords;
 
-        locationCoordinateChoice.current = {
-          longitude: longitude,
-          latitude: latitude
+        if (user === 'user1') {
+          locationCoordinateChoice.current = {
+            ...locationCoordinateChoice.current,
+            user1: {
+              latitude: latitude,
+              longitude: longitude
+            }
+          }
         }
+        else if (user === 'user2') {
+          locationCoordinateChoice.current = {
+            ...locationCoordinateChoice.current,
+            user2: {
+              latitude: latitude,
+              longitude: longitude
+            }
+          }
+        }
+
+        setUserInputsForm(
+          <>
+            <form id='credentialsForm' onSubmit={generateRestaurants}>
+              {generateCredentialsSection('user1')}
+              {generateCredentialsSection('user2')}
+            </form>
+            <button form='credentialsForm'>Generate Restaurant</button>
+          </>
+        )
       },
       (error) => console.log(error)
     );
-  
-    const autocomplete = new window.google.maps.places.Autocomplete(document.getElementById("location-input"));
-
-    autocomplete.addListener("place_changed", () => {
-      const place = autocomplete.getPlace();
-      if (place.geometry && place.geometry.location) {
-        locationCoordinateChoice.current = {
-          longitude: place.geometry.location.lng(),
-          latitude: place.geometry.location.lat()
-        }
-      }
-    });
   };
 
   // Creates input secion for each user
@@ -242,15 +280,47 @@ function App() {
           </select>
         </label>
 
-        <label> Location:
-          <input 
-            type="text" 
-            id="location-input" 
-            className='input-location'
-            ref={locationInputRef} // add a ref to access the DOM node later
-          />
-          <button type='button' onClick={getUserLocation}>Use Current Location</button>
-        </label>
+        {(user === 'user1' && locationCoordinateChoice.current.user1.latitude && locationCoordinateChoice.current.user1.longitude)
+          // If user1 is using current location 
+          ? 
+          <>
+            <label> Location:
+              <input type="text" id={`location-input-${user}`} className='input-location' 
+                readOnly={true} ref={locationInputRef}
+                />
+              <button type='button'>Remove</button>
+            </label>
+          </>
+          :
+          <>
+            {(user === 'user2' && locationCoordinateChoice.current.user2.latitude && locationCoordinateChoice.current.user2.longitude)
+              ?
+              // Else if user2 is using current location display normal input
+              <>
+                <label> Location:
+                  <input type="text" id={`location-input-${user}`} className='input-location' 
+                  readOnly={true} ref={locationInputRef}
+                  />
+                  <button type='button'>Remove</button>
+                </label>
+              </>
+              :
+              // Else display normal input
+              <>
+                <label> Location:
+                  <input 
+                    type="text" 
+                    id={`location-input-${user}`} 
+                    className='input-location'
+                    required={true}
+                    ref={locationInputRef} // add a ref to access the DOM node later
+                  />
+                  <button type='button' onClick={() => getUserLocation(user)}>Use Current Location</button>
+                </label>
+              </>
+            }
+          </>
+        }  
 
         <label> Distance Within:
             <input type="number" min="1" onChange={(e) => {
@@ -395,11 +465,8 @@ function App() {
       
       <div className="credentialsInputContainer">
 
-        <form id='credentialsForm' onSubmit={generateRestaurants}>
-          {generateCredentialsSection('user1')}
-          {generateCredentialsSection('user2')}
-        </form>
-        <button form='credentialsForm'>Generate Restaurant</button>
+        {userInputsForm}
+
       </div>
     </div>
   );
