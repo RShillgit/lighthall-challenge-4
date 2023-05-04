@@ -65,11 +65,23 @@ function App(props) {
   useEffect(() => {
     setUserInputsForm(
       <>
-        <form id='credentialsForm' onSubmit={generateRestaurants}>
+        <form class='row' id='credentialsForm' onSubmit={generateRestaurants}>
+        <div class='column' className='userOne'>
           {generateCredentialsSection('user1')}
+        </div>
+        <div class='column' className='formInputType'>
+        <p>Cuisine Type</p>
+        <p>Location</p>
+        <p>Distance Within</p>
+        <p>Open Now</p>
+        <p>Price</p>
+        <p>Rating</p>
+        </div>  
+        <div class='column' className='userTwo'>
           {generateCredentialsSection('user2')}
+        </div>
         </form>
-        <button form='credentialsForm'>Generate Restaurant</button>
+        <button className='submitSearch' form='credentialsForm'>Search</button>
       </>
     )
   }, [locationCoordinateChoice])
@@ -278,7 +290,7 @@ function App(props) {
 
     return (
       <div className='userCredentials'>
-        <label> Cuisine Type:
+        <label>
           <select onChange={(e) => {
             // User1 Selection
             if (user === 'user1') {
@@ -306,7 +318,7 @@ function App(props) {
           // If user1 is using current location 
           ? 
           <>
-            <label> Location:
+            <label>
               <input type="text" id={`location-input-${user}`} className='input-location' 
                 readOnly={true} ref={locationInputRef}
                 />
@@ -329,7 +341,7 @@ function App(props) {
               :
               // Else display normal input
               <>
-                <label> Location:
+                <label>
                   <input 
                     type="text" 
                     id={`location-input-${user}`} 
@@ -344,7 +356,7 @@ function App(props) {
           </>
         }  
 
-        <label> Distance Within:
+        <label>
             <input type="number" min="1" onChange={(e) => {
               // User1 Selection
               if (user === 'user1') {
@@ -418,7 +430,7 @@ function App(props) {
             </select>
         </label>
 
-        <label> Open Now:
+        <label>
           <select>
             <option value="">Any</option>
             <option value="Yes">Yes</option>
@@ -427,7 +439,7 @@ function App(props) {
               
         </label>
 
-        <label> Price:
+        <label>
           <select className='credentialsSelection' onChange={(e) => {
             // User1 Selection
             if (user === 'user1') {
@@ -452,7 +464,7 @@ function App(props) {
           </select>
         </label>
 
-        <label> Rating:
+        <label>
           <select className='credentialsSelection' onChange={(e) => {
             // User1 Selection
             if (user === 'user1') {
