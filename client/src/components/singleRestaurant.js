@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import '../styles.css';
 
 const SingleRestaurant = (props) => {
 
@@ -64,12 +65,12 @@ const SingleRestaurant = (props) => {
     }
 
     return (
-        <div>
+        <div className='currentRestaurantContainer'>
             {currentRestaurant
                 ?
-                <div>
+                <div className='currentRestaurant'>
                     <a href={currentRestaurant.url} target="_blank" rel="noreferrer">
-                        <h1>{currentRestaurant.name}</h1>
+                        <h1 className='currentName'>{currentRestaurant.name}</h1>
                     </a>
                 
                     <p>

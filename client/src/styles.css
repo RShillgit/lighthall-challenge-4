@@ -4,28 +4,39 @@
     padding: 0;
 }
 
+button {
+    cursor: pointer;
+}
+
 body {
     font-family: 'Roboto', sans-serif;
-    font-size: 1em;
-    letter-spacing: .1em;
+    font-size: 1.25em;
+    letter-spacing: .05em;
 }
 
 .column {
     float: left;
     width: 33.33%;
-  }
+}
+
+.App h1 {
+    margin-bottom: 50px;
+    background-color: #E00707;
+    padding: 25px;
+    color: white;
+}
+
 
 /* Credentials Input Section */
 .credentialsInputContainer {
     margin: auto;
     width: 50%;
-    border: 1px solid black;
-    padding: 1rem;
+    padding: 2rem;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    background-color: #DDDCDF;
+    background-color: rgb(221,220,223);
 }
 #credentialsForm {
     display: flex;
@@ -47,16 +58,52 @@ gap: 1rem;
 }
 
 .submitSearch {
-    
+    margin-top: 50px;
+    color: white;
+    width: 125px;
+    height: 37.5px;
+    border-style: none;
+    background-color: #E00707;
+    cursor: pointer;
+    transition: transform 0.3s ease 0s;
 }
 
+.submitSearch:active {     
+    box-shadow: 0px 5px 5px black;
+}
+
+/*all results*/
 .restaurantSuggestionsContainer {
     display: flex;
     flex-direction: column;
     border: 1px solid black;
+    
 }
 .individualRestaurant {
+    color: black;
     margin: 8px;
-    padding: 8px;
-    border: 1px solid red;
+    padding: 15px 50px;
+    border-bottom: 1px solid black;
+    text-decoration: none;
+}
+
+.individualRestaurant:hover {
+    color: blue;
+}
+
+.restaurantName {
+    font-size: 1.25em;
+}
+
+/*current restaurant*/
+.currentRestaurantContainer {
+    margin: 50px;
+}
+.currentRestaurant a {
+    color: black;
+    text-decoration: none;
+}
+
+.restaurantHours span {
+    color: #04C585;
 }

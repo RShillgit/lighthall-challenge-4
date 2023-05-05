@@ -274,10 +274,22 @@ function App(props) {
         setUserInputsForm(
           <>
             <form id='credentialsForm' onSubmit={generateRestaurants}>
-              {generateCredentialsSection('user1')}
-              {generateCredentialsSection('user2')}
-            </form>
-            <button form='credentialsForm'>Generate Restaurant</button>
+            <div class='column' className='userOne'>
+            {generateCredentialsSection('user1')}
+          </div>
+          <div class='column' className='formInputType'>
+          <p>Cuisine Type</p>
+          <p>Location</p>
+          <p>Distance Within</p>
+          <p>Open Now</p>
+          <p>Price</p>
+          <p>Rating</p>
+          </div>  
+          <div class='column' className='userTwo'>
+            {generateCredentialsSection('user2')}
+          </div>
+          </form>
+          <button className='submitSearch' form='credentialsForm'>Search</button>
           </>
         )
       },
@@ -322,7 +334,7 @@ function App(props) {
               <input type="text" id={`location-input-${user}`} className='input-location' 
                 readOnly={true} ref={locationInputRef}
                 />
-              <button type='button'>Remove</button>
+              <button type='button' title='Remove'><i class="fa fa-location-arrow" aria-hidden="true"></i></button>
             </label>
           </>
           :
@@ -331,11 +343,11 @@ function App(props) {
               ?
               // Else if user2 is using current location display normal input
               <>
-                <label> Location:
+                <label>
                   <input type="text" id={`location-input-${user}`} className='input-location' 
                   readOnly={true} ref={locationInputRef}
                   />
-                  <button type='button'>Remove</button>
+                  <button type='button' title='Remove'><i class="fa fa-location-arrow" aria-hidden="true"></i></button>
                 </label>
               </>
               :
@@ -349,7 +361,7 @@ function App(props) {
                     required={true}
                     ref={locationInputRef} // add a ref to access the DOM node later
                   />
-                  <button type='button' onClick={() => getUserLocation(user)}>Use Current Location</button>
+                  <button type='button' title='Use Current Location' onClick={() => getUserLocation(user)}><i class="fa fa-location-arrow" aria-hidden="true"></i></button>
                 </label>
               </>
             }
@@ -502,7 +514,7 @@ function App(props) {
           {restaurantSuggestions.map(restaurant => {
             return (
               <a href={`restaurants/${restaurant.id}`} className='individualRestaurant' key={restaurant.id}>
-                <p>{restaurant.name}</p>
+                <p className='restaurantName'>{restaurant.name}</p>
                 <p>Rating: {restaurant.rating}</p>
               </a>
             )
@@ -517,7 +529,10 @@ function App(props) {
 
   return (
     <div className="App">
-      <h1>Yelp For Couples</h1> 
+    <header>
+      <h1>Yelp For Couples</h1>
+    </header>
+       
       
       <div className="credentialsInputContainer">
         {userInputsForm}
