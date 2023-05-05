@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import Rating from 'react-rating';
 import '../styles.css';
 
 const SingleRestaurant = (props) => {
@@ -199,15 +200,16 @@ const SingleRestaurant = (props) => {
                     <a className="restaurantNav" href='/'>
                         <button>Home</button>
                     </a>
+                    <div className='bannerContainer'>
+                        <div className='imageBanner'>
+                            <img src={currentRestaurant.photos[0]} alt='img1'></img>
+                            <img src={currentRestaurant.photos[1]} alt='img2'></img>
+                            <img src={currentRestaurant.photos[2]} alt='img3'></img>
+                            <div className='bannerOverlay'></div>
+                        </div>
 
-                    <div className='imageBanner'>
-                        <img src={currentRestaurant.photos[0]}></img>
-                        <img src={currentRestaurant.photos[1]}></img>
-                        <img src={currentRestaurant.photos[2]}></img>
+                        
                     </div>
-
-                    <div className='bannerOverlay'></div>
-
                     <div className='currentRestaurant'>
 
                         <a className="yelpLink" href={currentRestaurant.url} target="_blank" rel="noreferrer">
@@ -235,7 +237,7 @@ const SingleRestaurant = (props) => {
                                 ?
                                 <span className="openClose">Open</span>
                                 :
-                                <span className="openClose">Closed</span>
+                                <span className="closeOpen">Closed</span>
                             }
                             {hoursOfOperation.current.map(dayHours => {
                                 // Javascript day indexes 0=sunday, 6=saturday
@@ -256,11 +258,16 @@ const SingleRestaurant = (props) => {
                             })}
                         </div>
 
-                        <p>Rating: {currentRestaurant.rating}</p>
+                        <p>Rating: <Rating 
+                        id='rating'
+                        name="half-rating-read" 
+                        initialRating={currentRestaurant.rating} 
+                        precision={0.5} 
+                        emptySymbol={['fa fa-star-o fa-1x']}
+                        fullSymbol={['fa fa-star fa-1x']}
+                        readonly /></p>
                         <p>Phone: {currentRestaurant.display_phone}</p>
-                        <a className="moreInfo" href={currentRestaurant.url}>
-                        <button>More Info</button>
-                    </a>
+                        <a href={currentRestaurant.url}><p className="moreInfo" >More Info &gt;&gt;</p></a>
                     </div>
                 </>
                 :
