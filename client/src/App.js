@@ -3,6 +3,7 @@ import cuisineTypes from './components/cuisineType';
 import cuisineMap  from './components/cuisineMap';
 import './styles.css';
 import Rating from 'react-rating';
+import logo from './assests/pleY Logo.png';
 
 function App(props) {
 
@@ -781,9 +782,12 @@ function App(props) {
     )
   };
 
+  const pleyLogo = logo;
+
   return (
     <div className="App">
     <header className='headerBar'>
+    <img className='logoIcon' src={pleyLogo} alt='pleYLogo' ></img>
       <h1>Yelp For Couples</h1>
     </header>
       
