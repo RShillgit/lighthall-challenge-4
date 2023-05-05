@@ -94,11 +94,24 @@ gap: 1rem;
 }
 
 .individualRestaurant {
+    display: flex;
     color: black;
     margin: 8px;
     padding: 15px 50px;
     border-bottom: 1px solid black;
     text-decoration: none;
+}
+
+.imageIcon {
+    border-radius: 25px;
+}
+
+.restaurantInfo {
+    margin-left: 8px;
+}
+
+.restaurantInfo p {
+    padding-bottom: 4px;
 }
 
 .restaurantName:hover {
@@ -117,6 +130,13 @@ gap: 1rem;
 .currentRestaurant a {
     color: black;
     text-decoration: none;
+}
+
+.imageBanner img {
+    margin: 0;
+    padding: 0;
+    object-fit: contain;
+    height: 500px;
 }
 
 .openClose  {

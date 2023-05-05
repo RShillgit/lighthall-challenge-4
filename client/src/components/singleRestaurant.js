@@ -200,7 +200,14 @@ const SingleRestaurant = (props) => {
                         <button>Home</button>
                     </a>
 
+                    <div className='imageBanner'>
+                        <img src={currentRestaurant.photos[0]}></img>
+                        <img src={currentRestaurant.photos[1]}></img>
+                        <img src={currentRestaurant.photos[2]}></img>
+                    </div>
+
                     <div className='currentRestaurant'>
+
                         <a className="yelpLink" href={currentRestaurant.url} target="_blank" rel="noreferrer">
                             <h1 className='currentName'>{currentRestaurant.name}</h1>
                         </a>

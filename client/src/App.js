@@ -582,10 +582,8 @@ function App(props) {
           {restaurantSuggestions.map(restaurant => {
             return (
               <a href={`restaurants/${restaurant.id}`} className='individualRestaurant' key={restaurant.id}>
-                <div>
-                
-                </div>
-                <div>
+                <img className='imageIcon' src={restaurant.image_url} alt={restaurant.name} width='150' height='150' ></img>
+                <div className='restaurantInfo'>
                   <p className='restaurantName'>{restaurant.name}</p>
                   <p>Rating: {restaurant.rating}</p>
                   <p>{restaurant.categories.map((category, i) => {
