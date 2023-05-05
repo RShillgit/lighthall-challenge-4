@@ -617,9 +617,14 @@ function App(props) {
   const handleFormReset = () => {
     // Reset cuisine choice for user1 and user2
     cuisineChoice.current = {
-      user1: '',
-      user2: ''
+      user1: null,
+      user2: null
     }
+    // Reset location string choice for user1 and user 2
+    locationStringChoice.current = {
+      user1: null,
+      user2: null
+    };
     // Reset location coordinate choice for user1 and user2
     locationCoordinateChoice.current = {
       user1: { latitude: null, longitude: null },
@@ -638,8 +643,8 @@ function App(props) {
 
     // Reset price choice for user1 and user2
     priceChoice.current = {
-      user1: '',
-      user2: ''
+      user1: null,
+      user2: null
     }
 
     // Reset form fields
@@ -657,6 +662,29 @@ function App(props) {
 
     // Clear any search results
     setRestaurantSuggestions([]);
+
+    // Reset user inputs form
+    setUserInputsForm(
+      <>
+        <form id='credentialsForm' onSubmit={generateRestaurants}>
+        <div class='column' className='userOne'>
+        {generateCredentialsSection('user1')}
+        </div>
+        <div class='column' className='formInputType'>
+        <p>Cuisine Type</p>
+        <p>Location</p>
+        <p>Distance Within</p>
+        <p>Open Now</p>
+        <p>Price</p>
+        </div>  
+        <div class='column' className='userTwo'>
+          {generateCredentialsSection('user2')}
+        </div>
+        </form>
+        <button className='submitSearch' form='credentialsForm'>Search</button>
+        <button className='resetSearch' onClick={handleFormReset}>Reset</button>
+      </>
+    )
   };
 
   return (
