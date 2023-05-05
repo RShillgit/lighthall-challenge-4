@@ -132,8 +132,17 @@ function App(props) {
   // Prepares user data to align with API format requirements
   const prepareUserData = () => {
     // Format Cuisine Types
-    let user1Cuisine = cuisineMap[cuisineChoice.current.user1];
-    let user2Cuisine = cuisineMap[cuisineChoice.current.user2];
+    let user1Cuisine = null;
+    let user2Cuisine = null;
+
+    if (cuisineChoice.current.user1 !== null) {
+      user1Cuisine = cuisineMap[cuisineChoice.current.user1];
+    }
+    if (cuisineChoice.current.user2 !== null) {
+      user2Cuisine = cuisineMap[cuisineChoice.current.user2];
+    }
+
+    let formattedCuisines =  {user1: user1Cuisine, user2: user2Cuisine};
 
     // Format Location & handle errors
     const locationInputs = document.querySelectorAll('.input-location');
@@ -217,7 +226,7 @@ function App(props) {
     }
 
     return {
-      formattedCuisines: {user1:user1Cuisine ,user2:user2Cuisine },
+      formattedCuisines,
       formattedLocations,
       formattedRadius: radiiAverage,
       formattedPrice,
