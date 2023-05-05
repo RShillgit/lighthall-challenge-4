@@ -102,6 +102,10 @@ gap: 1rem;
     text-decoration: none;
 }
 
+#rating {
+    color: orange;
+}
+
 .imageIcon {
     border-radius: 25px;
 }
@@ -121,6 +125,47 @@ gap: 1rem;
 .restaurantName {
     font-size: 1.25em;
 }
+
+/* Random Restaurant */
+.chooseRandomRestaurant {
+    margin-top: 16px;
+    margin-bottom: 8px;
+    display: flex;
+    justify-content: center;
+}
+.chooseRandomRestaurant #openRandomlySelectedRestaurant {
+    color: white;
+    width: 125px;
+    height: 37.5px;
+    border-style: none;
+    background-color: #E00707;
+    cursor: pointer;
+    transition: transform 0.3s ease 0s;
+    justify-self: center;
+}
+#randomlySelectedRestaurant {
+    width: 50vw;
+    padding: 1rem;
+    z-index: 10;
+    top: 50%;
+    left: 50%;
+    translate: -50% -50%;
+}
+.closeModalButton {
+    display: flex;
+    justify-content: center;
+}
+.closeModalButton #closeRandomlySelectedRestaurant {
+    color: white;
+    width: 125px;
+    height: 37.5px;
+    border-style: none;
+    background-color: #E00707;
+    cursor: pointer;
+    transition: transform 0.3s ease 0s;
+    justify-self: center;
+}
+
 
 /*current restaurant*/
 
