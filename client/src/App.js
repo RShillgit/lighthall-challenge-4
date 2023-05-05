@@ -150,7 +150,7 @@ function App(props) {
             setRestaurantSuggestions(data.restaurants)
           }
           else{
-            message.textContent = data.error + "\n\n Please Reset :)";
+            //message.textContent = data.error + "\n\n Please Reset :)";
             setRestaurantSuggestions();
           }
         })
@@ -166,14 +166,6 @@ function App(props) {
     })
     // Locations are invalid
     .catch(err => {
-      console.log(err)
-      // Location is invalid
-      cuisineChoice.current = { user1: null, user2: null };
-      radiusChoice.current = { user1: {}, user2: {} };
-      priceChoice.current = { user1: [], user2: [] };
-      locationCoordinateChoice.current = { user1: null, user2: null };
-      locationStringChoice.current = { user1: null, user2: null };
-
       // Set error message
       setUnexpectedError(
         <div className='unexpectedError'>
@@ -298,10 +290,6 @@ function App(props) {
   
   // Gets users longitude and latitude
   const getUserLocation = (user) => {
-    console.log(user)
-
-    console.log(locationCoordinateChoice.current)
-    console.log(locationStringChoice.current)
 
     // Alter input associated with this user
     const userLocationInput = document.getElementById(`location-input-${user}`);
@@ -349,6 +337,9 @@ function App(props) {
             }
           }
         }
+
+        console.log(locationCoordinateChoice.current)
+        console.log(locationStringChoice.current)
 
         setUserInputsForm(
           <>

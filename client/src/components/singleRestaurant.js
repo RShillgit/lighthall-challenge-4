@@ -195,10 +195,13 @@ const SingleRestaurant = (props) => {
     return (
         <div className="App">
         <header className="currentRestaurantHeader">
-            <h1 className='headerBar'>Yelp For Couples</h1>
+            <h1 className='headerBar'>
+                <img className='logoIcon' src={pleyLogo} alt='pleYLogo' ></img>
+                Yelp For Couples
+            </h1>
         </header>
 
-        <div  className='currentRestaurantContainer'>
+        <div className='currentRestaurantContainer'>
         {currentRestaurant
                 ?
                 <>
