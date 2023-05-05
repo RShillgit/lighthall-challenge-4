@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import cuisineTypes from './components/cuisineType';
 import cuisineMap  from './components/cuisineMap';
 import './styles.css';
-import Rating from 'react-rating'
+import Rating from 'react-rating';
 
 function App(props) {
 

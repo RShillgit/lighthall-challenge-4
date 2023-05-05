@@ -206,6 +206,8 @@ const SingleRestaurant = (props) => {
                         <img src={currentRestaurant.photos[2]}></img>
                     </div>
 
+                    <div className='bannerOverlay'></div>
+
                     <div className='currentRestaurant'>
 
                         <a className="yelpLink" href={currentRestaurant.url} target="_blank" rel="noreferrer">
@@ -256,6 +258,9 @@ const SingleRestaurant = (props) => {
 
                         <p>Rating: {currentRestaurant.rating}</p>
                         <p>Phone: {currentRestaurant.display_phone}</p>
+                        <a className="moreInfo" href={currentRestaurant.url}>
+                        <button>More Info</button>
+                    </a>
                     </div>
                 </>
                 :

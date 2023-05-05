@@ -134,11 +134,18 @@ gap: 1rem;
 
 .imageBanner {
     width: 100%;
+    display: inline-block;
 }
 
 .imageBanner img {
-    object-fit: contain;
     height: 500px;
+}
+
+.imageOverlay {
+    display: grid;
+    max-width: 100%;
+    background: black;
+
 }
 
 .openClose  {
