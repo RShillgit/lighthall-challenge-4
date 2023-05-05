@@ -56,6 +56,8 @@ function App(props) {
   const [restaurantSuggestions , setRestaurantSuggestions] = useState();
   const [restaurantsDisplay, setRestaurantsDisplay] = useState();
 
+  const [randomRestaurant, setRandomRestaurant] = useState();
+
   const message = document.getElementById('error-message');
 
   // On Mount
@@ -574,12 +576,27 @@ function App(props) {
     )
   }
 
+  const randomlySelectRestaurant = () => {
+
+    const randomSelection = restaurantSuggestions[Math.floor(Math.random() * restaurantSuggestions.length)];
+    setRandomRestaurant(randomSelection);
+
+    // Open modal
+    const modal = document.getElementById('randomlySelectedRestaurant');
+    modal.showModal();
+  }
+
   // All restaurants display
   const allRestaurantsSection = (
     <>
       {restaurantSuggestions
         ?
         <div className='restaurantSuggestionsContainer'>
+
+          <div className='chooseRandomRestaurant'>
+            <button onClick={randomlySelectRestaurant} id="openRandomlySelectedRestaurant">Choose For Me</button>
+          </div>
+
           {restaurantSuggestions.map(restaurant => {
             return (
               <a href={`restaurants/${restaurant.id}`} className='individualRestaurant' key={restaurant.id}>
@@ -706,6 +723,52 @@ function App(props) {
         <p id="error-message"></p>
       </div>
       {restaurantsDisplay}
+
+      <dialog id='randomlySelectedRestaurant'>
+        {randomRestaurant
+          ?
+          <div className='randomRestaurantInfo'>
+            <a href={`/restaurants/${randomRestaurant.id}`}  className='individualRestaurant'>
+              <img className='imageIcon' src={randomRestaurant.image_url} alt={randomRestaurant.name} width='150' height='150' ></img>
+                <div className='restaurantInfo'>
+                  <p className='restaurantName'>{randomRestaurant.name}</p>
+                  <p><Rating 
+                    name="half-rating-read" 
+                    initialRating={randomRestaurant.rating} 
+                    precision={0.5} 
+                    emptySymbol={['fa fa-star-o fa-2x medium']}
+                    fullSymbol={['fa fa-star fa-2x medium']}
+                    
+                    readonly />
+                  </p>
+                  
+                  <p>{randomRestaurant.categories.map((category, i) => {
+
+                    if(i === randomRestaurant.categories.length - 1) {
+                        return (
+                            <span className='restaurantCategory' key={category.title}> {category.title}</span>
+                        )
+                    } else {
+                      return (
+                          <span className='restaurantCategory' key={category.alias}> {category.title} </span>
+                      )
+                  }
+                  })}
+                    </p>
+                </div>
+            </a>
+          </div>
+          :
+          <></>
+        }
+        <div className='closeModalButton'>
+          <button id='closeRandomlySelectedRestaurant' onClick={() => {
+            const modal = document.getElementById('randomlySelectedRestaurant');
+            modal.close();
+          }}>Close</button>
+        </div>
+      </dialog>
+
     </div>
   );
 }
