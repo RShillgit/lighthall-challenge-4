@@ -42,11 +42,6 @@ function App(props) {
     user2: null
   });
 
-  const ratingChoice = useRef({
-    user1: null,
-    user2: null
-  })
-
   const [userInputsForm, setUserInputsForm] = useState();
 
   //autocomplete location
@@ -78,7 +73,6 @@ function App(props) {
         <p>Distance Within</p>
         <p>Open Now</p>
         <p>Price</p>
-        <p>Rating</p>
         </div>  
         <div class='column' className='userTwo'>
           {generateCredentialsSection('user2')}
@@ -214,35 +208,11 @@ function App(props) {
       }
     } else formattedPrice = [1, 2, 3, 4];
     
-    // Format Rating into object with min and max ratings & handle errors
-    let userRatings = null;
-    let formattedRating = null;
-    if (ratingChoice.current.user1 && ratingChoice.current.user2) { 
-      userRatings = ((ratingChoice.current.user1.split('-')).concat(ratingChoice.current.user2.split('-')) )
-    }
-    else if (ratingChoice.current.user1) {
-      userRatings = ((ratingChoice.current.user1.split('-')));
-    }
-    else if (ratingChoice.current.user2) {
-      userRatings = ((ratingChoice.current.user2.split('-')));
-    }
-
-    if (userRatings) {
-      userRatings = userRatings.map(rating => {
-        return Number(rating);
-      })
-      formattedRating = {
-        min: Math.min(...userRatings),
-        max: Math.max(...userRatings)
-      }
-    }
-
     return {
       formattedCuisines,
       formattedLocations,
       formattedRadius: radiiAverage,
       formattedPrice,
-      formattedRating
     }
   }
   
@@ -308,7 +278,6 @@ function App(props) {
           <p>Distance Within</p>
           <p>Open Now</p>
           <p>Price</p>
-          <p>Rating</p>
           </div>  
           <div class='column' className='userTwo'>
             {generateCredentialsSection('user2')}
@@ -501,32 +470,6 @@ function App(props) {
             <option value="$$$$">$$$$</option>
           </select>
         </label>
-
-        <label>
-          <select className='credentialsSelection' onChange={(e) => {
-            // User1 Selection
-            if (user === 'user1') {
-              ratingChoice.current = {
-                ...ratingChoice.current,
-                user1: e.target.value
-              }
-            }
-            // User2 Selection
-            else if (user === 'user2') {
-              ratingChoice.current = {
-                ...ratingChoice.current,
-                user2: e.target.value
-              }
-            }
-          }}>
-            <option value="">Any</option>
-            <option value="0-1">0-1 Stars</option>
-            <option value="1-2">1-2 Stars</option>
-            <option value="2-3">2-3 Stars</option>
-            <option value="3-4">3-4 Stars</option>
-            <option value="4-5">4-5 Stars</option>
-          </select>
-        </label>
       </div>
     )
   }
@@ -578,11 +521,6 @@ function App(props) {
       user2: ''
     }
 
-    // Reset rating choice for user1 and user2
-    ratingChoice.current = {
-      user1: '',
-      user2: ''
-    }
     // Reset form fields
     const form = document.getElementById('credentialsForm');
     form.reset();
