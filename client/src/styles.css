@@ -183,6 +183,9 @@ gap: 1.5rem;
 
 
 /*current restaurant*/
+.currentRestaurantHeader .headerBar {
+    margin-bottom: 0;
+}
 
 .currentRestaurantContainer a button, .currentRestaurant {
     margin: 50px;

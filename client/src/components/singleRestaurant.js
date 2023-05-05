@@ -191,7 +191,7 @@ const SingleRestaurant = (props) => {
 
     return (
         <div className="App">
-        <header>
+        <header className="currentRestaurantHeader">
             <h1 className='headerBar'>Yelp For Couples</h1>
         </header>
 
