@@ -630,7 +630,11 @@ function App(props) {
       user1: { radius: null, units: 'Mi' },
       user2: { radius: null, units: 'Mi' }
     }
-    // TODO: Reset open now choice for user1 and user2
+    // Reset open now choice for user1 and user2
+    openChoice.current = {
+      user1: null,
+      user2: null
+    }
 
     // Reset price choice for user1 and user2
     priceChoice.current = {
@@ -647,6 +651,9 @@ function App(props) {
     if(message){
       message.textContent = '';
     };
+
+    // Remove restaurants from local storage
+    localStorage.removeItem('restaurants');
 
     // Clear any search results
     setRestaurantSuggestions([]);
