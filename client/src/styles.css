@@ -254,6 +254,10 @@ gap: 1rem;
     color: white;   
 }
 
+.moreInfo:hover {
+    color:aqua;   
+}
+
 .currentRestaurant .yelpLink {
     margin-top: 1rem;
     margin-bottom: 2rem;
