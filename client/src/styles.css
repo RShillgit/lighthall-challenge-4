@@ -4,8 +4,14 @@
     padding: 0;
 }
 
+input, select, option {
+    font-size: 16px;
+    padding: 4px;
+}
+
 button {
     cursor: pointer;
+    font-size: 16px;
 }
 
 body {
@@ -47,7 +53,7 @@ padding: 0 25px 0;
 display: flex;
 flex-direction: column;    
 align-items: center;
-gap: 1rem;
+gap: 1.5rem;
 }
 
 .userCredentials {
@@ -254,6 +260,10 @@ gap: 1rem;
     color: white;   
 }
 
+.moreInfo:hover {
+    color:aqua;   
+}
+
 .currentRestaurant .yelpLink {
     margin-top: 1rem;
     margin-bottom: 2rem;
@@ -272,4 +282,35 @@ gap: 1rem;
 
 .formButtonOptions {
     display: flex;  
+}
+
+.errorContainer {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+    text-align: center;
+    justify-content: center;
+}
+
+.errorMessage {
+    padding-top: 250px;
+    padding-bottom: 50px;
+}
+
+.errorButton {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: white;
+    width: 125px;
+    height: 37.5px;
+    border-style: none;
+    background-color: #E00707;
+    cursor: pointer;
+    transition: transform 0.3s ease 0s;
+}
+
+.locationButton {
+    padding: 4px;
 }
