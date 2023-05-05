@@ -134,6 +134,7 @@ function App(props) {
         if(message){
           message.textContent = '';
         };
+        setUnexpectedError();
         localStorage.setItem('restaurants', JSON.stringify(data.restaurants));
         setRestaurantSuggestions(data.restaurants)
       }

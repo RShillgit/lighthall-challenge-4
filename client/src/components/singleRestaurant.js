@@ -99,11 +99,18 @@ const SingleRestaurant = (props) => {
 
     const formatRestaurantHours = (dayHours) => {
 
+        //tCXDUzDMjDhBfCAaA8dmCg
+
         let openTime = dayHours.start;
         let closeTime = dayHours.end;
 
+        console.log(dayHours)
+
         if(Number(openTime) > 1200) {
             openTime = openTime - 1200; 
+            if (openTime.toString().length < 4) {
+                openTime = `0${openTime}`;
+            }
             const openTimeSplit = openTime.toString().split('');
             openTime = `${openTimeSplit[0]}${openTimeSplit[1]}:${openTimeSplit[2]}${openTimeSplit[3]} PM`;
         } 
