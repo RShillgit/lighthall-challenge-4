@@ -101,7 +101,7 @@ gap: 1rem;
     text-decoration: none;
 }
 
-.individualRestaurant:hover {
+.restaurantName:hover {
     color: blue;
 }
 
@@ -123,14 +123,14 @@ gap: 1rem;
     color: #04C585;
 }
 
-/*
+
 .restaurantCategory {
     border-radius: 5px;
     padding: 0 5px 0;
-    margin: 4px;
+    margin-right: 8px;
     background-color: #D9D9D9;
 }
-*/
+
 
 /* Restaurant Nav */
 .restaurantNavigation {
