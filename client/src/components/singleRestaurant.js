@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import Rating from 'react-rating';
 import '../styles.css';
+import logo from '../assests/pleY Logo.png';
 
 const SingleRestaurant = (props) => {
 
@@ -188,6 +189,8 @@ const SingleRestaurant = (props) => {
             )
         }
     }
+
+    const pleyLogo = logo;
 
     return (
         <div className="App">

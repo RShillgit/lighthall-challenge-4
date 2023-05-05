@@ -26,10 +26,18 @@ body {
 }
 
 .headerBar {
+    display: flex;
     margin-bottom: 50px;
     background-color: #E00707;
     padding: 25px;
     color: white;
+    align-items: center;
+}
+
+.logoIcon{
+    height: 64px;
+    width: 64px;
+    padding: 8px;
 }
 
 
