@@ -88,7 +88,7 @@ const SingleRestaurant = (props) => {
                                 )
                             } else {
                                 return (
-                                    <span className='restaurantCategory' key={category.alias}> {category.title} </span>
+                                    <span className='restaurantCategory' key={category.alias}> {category.title}, </span>
                                 )
                             }
                         })}

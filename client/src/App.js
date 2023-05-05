@@ -529,10 +529,9 @@ function App(props) {
 
   return (
     <div className="App">
-    <header>
+    <header className='headerBar'>
       <h1>Yelp For Couples</h1>
     </header>
-       
       
       <div className="credentialsInputContainer">
         {userInputsForm}
