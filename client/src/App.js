@@ -37,6 +37,11 @@ function App(props) {
     },
   })
 
+  const openChoice = useRef({
+    user1: null,
+    user2: null
+  })
+
   const priceChoice = useRef({
     user1: null,
     user2: null
@@ -195,7 +200,36 @@ function App(props) {
       radiiAverage = Math.ceil(userRadiiValues.reduce((sum, value) => (sum + value)) / userRadiiValues.length);  
     } else radiiAverage = 40000; // Max Radius Value
 
-    // TODO: Format Open now
+    // Format Open now
+    let formattedOpenNow = {
+      user1: null,
+      user2: null,
+    }
+
+    if (openChoice.current.user1 === 'Yes') {
+      formattedOpenNow = {
+        ...formattedOpenNow,
+        user1: true
+      }
+    }
+    if (openChoice.current.user2 === 'Yes') {
+      formattedOpenNow = {
+        ...formattedOpenNow,
+        user2: true
+      }
+    }
+    if (openChoice.current.user1 === 'No') {
+      formattedOpenNow = {
+        ...formattedOpenNow,
+        user1: false
+      }
+    }
+    if (openChoice.current.user2 === 'No') {
+      formattedOpenNow = {
+        ...formattedOpenNow,
+        user2: false
+      }
+    }
 
     // Format Price into array of integers & handle errors
     let formattedPrice = [];
@@ -212,6 +246,7 @@ function App(props) {
       formattedCuisines,
       formattedLocations,
       formattedRadius: radiiAverage,
+      formattedOpenNow,
       formattedPrice,
     }
   }
@@ -292,6 +327,7 @@ function App(props) {
     );
   };
 
+  // Removes users longitude and latitude
   const removeUserLocation = (user) => {
 
     if (user === 'user1') {
@@ -486,7 +522,22 @@ function App(props) {
         </label>
 
         <label>
-          <select>
+          <select className='credentialsSelection' onChange={(e) => {
+              // User1 Selection
+              if (user === 'user1') {
+                openChoice.current = {
+                  ...openChoice.current,
+                  user1: e.target.value
+                }
+              }
+              // User2 Selection
+              else if (user === 'user2') {
+                openChoice.current = {
+                  ...openChoice.current,
+                  user2: e.target.value
+                }
+              }
+          }}>
             <option value="">Any</option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
