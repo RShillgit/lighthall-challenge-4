@@ -131,7 +131,7 @@ function App(props) {
       console.log(data)
       if (data.success) {
         // Clear any error message
-        if(!message){
+        if(message){
           message.textContent = '';
         };
         localStorage.setItem('restaurants', JSON.stringify(data.restaurants));
