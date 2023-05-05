@@ -586,7 +586,15 @@ function App(props) {
                 <img className='imageIcon' src={restaurant.image_url} alt={restaurant.name} width='150' height='150' ></img>
                 <div className='restaurantInfo'>
                   <p className='restaurantName'>{restaurant.name}</p>
-                  <p><Rating name="half-rating-read" initialRating={restaurant.rating} precision={0.5} readonly /></p>
+                  <p><Rating 
+                    name="half-rating-read" 
+                    initialRating={restaurant.rating} 
+                    precision={0.5} 
+                    emptySymbol={['fa fa-star-o fa-2x medium']}
+                    fullSymbol={['fa fa-star fa-2x medium']}
+                    
+                    readonly />
+                  </p>
                   
                   <p>{restaurant.categories.map((category, i) => {
 
