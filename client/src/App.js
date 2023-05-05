@@ -483,8 +483,26 @@ function App(props) {
           {restaurantSuggestions.map(restaurant => {
             return (
               <a href={`restaurants/${restaurant.id}`} className='individualRestaurant' key={restaurant.id}>
-                <p className='restaurantName'>{restaurant.name}</p>
-                <p>Rating: {restaurant.rating}</p>
+                <div>
+                
+                </div>
+                <div>
+                  <p className='restaurantName'>{restaurant.name}</p>
+                  <p>Rating: {restaurant.rating}</p>
+                  <p>{restaurant.categories.map((category, i) => {
+
+                    if(i === restaurant.categories.length - 1) {
+                        return (
+                            <span className='restaurantCategory' key={category.title}> {category.title}</span>
+                        )
+                    } else {
+                      return (
+                          <span className='restaurantCategory' key={category.alias}> {category.title} </span>
+                      )
+                  }
+                  })}
+                    </p>
+                </div>
               </a>
             )
             
