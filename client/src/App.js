@@ -119,7 +119,6 @@ function App(props) {
       cuisineChoice.current = { user1: null, user2: null };
       radiusChoice.current = { user1: {}, user2: {} };
       priceChoice.current = { user1: [], user2: [] };
-      ratingChoice.current = { user1: null, user2: null };
       locationCoordinateChoice.current = { user1: null, user2: null };
       locationStringChoice.current = { user1: null, user2: null };
       alert('Please enter valid locations');
@@ -221,7 +220,6 @@ function App(props) {
       cuisineChoice.current = { user1: null, user2: null };
       radiusChoice.current = { user1: {}, user2: {} };
       priceChoice.current = { user1: [], user2: [] };
-      ratingChoice.current = { user1: null, user2: null };
       locationCoordinateChoice.current = { user1: null, user2: null };
       locationStringChoice.current = { user1: null, user2: null };
       alert('Please enter valid locations');
