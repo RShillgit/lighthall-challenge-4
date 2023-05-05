@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import cuisineTypes from './components/cuisineType';
 import cuisineMap  from './components/cuisineMap';
 import './styles.css';
+import Rating from 'react-rating';
 
 function App(props) {
 
@@ -37,15 +38,15 @@ function App(props) {
     },
   })
 
+  const openChoice = useRef({
+    user1: null,
+    user2: null
+  })
+
   const priceChoice = useRef({
     user1: null,
     user2: null
   });
-
-  const ratingChoice = useRef({
-    user1: null,
-    user2: null
-  })
 
   const [userInputsForm, setUserInputsForm] = useState();
 
@@ -55,8 +56,12 @@ function App(props) {
   const [restaurantSuggestions , setRestaurantSuggestions] = useState();
   const [restaurantsDisplay, setRestaurantsDisplay] = useState();
 
+  const [randomRestaurant, setRandomRestaurant] = useState();
+
   const message = document.getElementById('error-message');
   const google = window.google;
+
+  const [unexpectedError, setUnexpectedError] = useState();
 
   // On Mount
   useEffect(() => {
@@ -79,14 +84,15 @@ function App(props) {
         <p>Distance Within</p>
         <p>Open Now</p>
         <p>Price</p>
-        <p>Rating</p>
         </div>  
         <div class='column' className='userTwo'>
           {generateCredentialsSection('user2')}
         </div>
         </form>
-        <button className='submitSearch' form='credentialsForm'>Search</button>
-        <button className='resetSearch' onClick={handleFormReset}>Reset</button>
+        <div className='FormButtonOptions'>
+          <button className='submitSearch' form='credentialsForm'>Search</button>
+          <button className='resetSearch' onClick={handleFormReset}>Reset</button>
+        </div>
       </>
     )
   }, [locationCoordinateChoice])
@@ -105,11 +111,6 @@ function App(props) {
     })
 
   }, [userInputsForm]);
-
-  // Clear search results when component mounts or updates
-  useEffect(() => {
-    setRestaurantSuggestions([]);
-  }, []);
   
   // User inputs form submit
   const generateRestaurants = async(e) => {
@@ -131,7 +132,6 @@ function App(props) {
     
     // Prepare user data for API
     const formattedData = prepareUserData();
-    console.log(formattedData);
 
     fetch(`${props.serverURL}/api`, {
       method: 'POST',
@@ -147,6 +147,7 @@ function App(props) {
         if(message){
           message.textContent = '';
         };
+        setUnexpectedError();
         localStorage.setItem('restaurants', JSON.stringify(data.restaurants));
         setRestaurantSuggestions(data.restaurants)
       }
@@ -155,7 +156,13 @@ function App(props) {
         setRestaurantSuggestions([]);
       }
     })
-    .catch(err => console.log(err))
+    .catch(err => {
+      setUnexpectedError(
+        <div className='unexpectedError'>
+          <p>Oops, an unexpected error occurred, please reset {":)"}</p>
+        </div>
+      )
+    })
   }
 
   // Prepares user data to align with API format requirements
@@ -259,7 +266,36 @@ function App(props) {
       radiiAverage = Math.ceil(userRadiiValues.reduce((sum, value) => (sum + value)) / userRadiiValues.length);  
     } else radiiAverage = 40000; // Max Radius Value
 
-    // TODO: Format Open now
+    // Format Open now
+    let formattedOpenNow = {
+      user1: null,
+      user2: null,
+    }
+
+    if (openChoice.current.user1 === 'Yes') {
+      formattedOpenNow = {
+        ...formattedOpenNow,
+        user1: true
+      }
+    }
+    if (openChoice.current.user2 === 'Yes') {
+      formattedOpenNow = {
+        ...formattedOpenNow,
+        user2: true
+      }
+    }
+    if (openChoice.current.user1 === 'No') {
+      formattedOpenNow = {
+        ...formattedOpenNow,
+        user1: false
+      }
+    }
+    if (openChoice.current.user2 === 'No') {
+      formattedOpenNow = {
+        ...formattedOpenNow,
+        user2: false
+      }
+    }
 
     // Format Price into array of integers & handle errors
     let formattedPrice = [];
@@ -272,35 +308,12 @@ function App(props) {
       }
     } else formattedPrice = [1, 2, 3, 4];
     
-    // Format Rating into object with min and max ratings & handle errors
-    let userRatings = null;
-    let formattedRating = null;
-    if (ratingChoice.current.user1 && ratingChoice.current.user2) { 
-      userRatings = ((ratingChoice.current.user1.split('-')).concat(ratingChoice.current.user2.split('-')) )
-    }
-    else if (ratingChoice.current.user1) {
-      userRatings = ((ratingChoice.current.user1.split('-')));
-    }
-    else if (ratingChoice.current.user2) {
-      userRatings = ((ratingChoice.current.user2.split('-')));
-    }
-
-    if (userRatings) {
-      userRatings = userRatings.map(rating => {
-        return Number(rating);
-      })
-      formattedRating = {
-        min: Math.min(...userRatings),
-        max: Math.max(...userRatings)
-      }
-    }
-
     return {
       formattedCuisines,
       formattedLocations,
       formattedRadius: radiiAverage,
+      formattedOpenNow,
       formattedPrice,
-      formattedRating
     }
   }
   
@@ -366,20 +379,72 @@ function App(props) {
           <p>Distance Within</p>
           <p>Open Now</p>
           <p>Price</p>
-          <p>Rating</p>
           </div>  
           <div class='column' className='userTwo'>
             {generateCredentialsSection('user2')}
           </div>
           </form>
+          <div className='FormButtonOptions'>
           <button className='submitSearch' form='credentialsForm'>Search</button>
           <button className='resetSearch' onClick={handleFormReset}>Reset</button>
+        </div>
           </>
         )
       },
       (error) => console.log(error)
     );
   };
+
+  // Removes users longitude and latitude
+  const removeUserLocation = (user) => {
+
+    if (user === 'user1') {
+      locationCoordinateChoice.current = {
+        ...locationCoordinateChoice.current,
+        user1: {
+          latitude: null,
+          longitude: null
+        }
+      }
+    }
+    else if (user === 'user2') {
+      locationCoordinateChoice.current = {
+        ...locationCoordinateChoice.current,
+        user2: {
+          latitude: null,
+          longitude: null
+        }
+      }
+    }
+
+    // Alter input associated with this user
+    const userLocationInput = document.getElementById(`location-input-${user}`);
+    userLocationInput.value = '';
+
+    setUserInputsForm(
+      <>
+        <form id='credentialsForm' onSubmit={generateRestaurants}>
+        <div class='column' className='userOne'>
+        {generateCredentialsSection('user1')}
+        </div>
+        <div class='column' className='formInputType'>
+        <p>Cuisine Type</p>
+        <p>Location</p>
+        <p>Distance Within</p>
+        <p>Open Now</p>
+        <p>Price</p>
+        </div>  
+        <div class='column' className='userTwo'>
+          {generateCredentialsSection('user2')}
+        </div>
+        </form>
+        <div className='FormButtonOptions'>
+          <button className='submitSearch' form='credentialsForm'>Search</button>
+          <button className='resetSearch' onClick={handleFormReset}>Reset</button>
+        </div>
+      </>
+    )
+  }
 
   // Creates input secion for each user
   const generateCredentialsSection = (user) => {
@@ -418,20 +483,20 @@ function App(props) {
               <input type="text" id={`location-input-${user}`} className='input-location' 
                 readOnly={true} ref={locationInputRef}
                 />
-              <button type='button' title='Remove'><i class="fa fa-location-arrow" aria-hidden="true"></i></button>
+              <button type='button' title='Remove' onClick={() => removeUserLocation(user)}><i class="fa fa-location-arrow" aria-hidden="true"></i></button>
             </label>
           </>
           :
           <>
             {(user === 'user2' && locationCoordinateChoice.current.user2.latitude && locationCoordinateChoice.current.user2.longitude)
               ?
-              // Else if user2 is using current location display normal input
+              // Else if user2 is using current location
               <>
                 <label>
                   <input type="text" id={`location-input-${user}`} className='input-location' 
                   readOnly={true} ref={locationInputRef}
                   />
-                  <button type='button' title='Remove'><i class="fa fa-location-arrow" aria-hidden="true"></i></button>
+                  <button type='button' title='Remove' onClick={() => removeUserLocation(user)}><i class="fa fa-location-arrow" aria-hidden="true"></i></button>
                 </label>
               </>
               :
@@ -527,7 +592,22 @@ function App(props) {
         </label>
 
         <label>
-          <select>
+          <select className='credentialsSelection' onChange={(e) => {
+              // User1 Selection
+              if (user === 'user1') {
+                openChoice.current = {
+                  ...openChoice.current,
+                  user1: e.target.value
+                }
+              }
+              // User2 Selection
+              else if (user === 'user2') {
+                openChoice.current = {
+                  ...openChoice.current,
+                  user2: e.target.value
+                }
+              }
+          }}>
             <option value="">Any</option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
@@ -559,34 +639,18 @@ function App(props) {
             <option value="$$$$">$$$$</option>
           </select>
         </label>
-
-        <label>
-          <select className='credentialsSelection' onChange={(e) => {
-            // User1 Selection
-            if (user === 'user1') {
-              ratingChoice.current = {
-                ...ratingChoice.current,
-                user1: e.target.value
-              }
-            }
-            // User2 Selection
-            else if (user === 'user2') {
-              ratingChoice.current = {
-                ...ratingChoice.current,
-                user2: e.target.value
-              }
-            }
-          }}>
-            <option value="">Any</option>
-            <option value="0-1">0-1 Stars</option>
-            <option value="1-2">1-2 Stars</option>
-            <option value="2-3">2-3 Stars</option>
-            <option value="3-4">3-4 Stars</option>
-            <option value="4-5">4-5 Stars</option>
-          </select>
-        </label>
       </div>
     )
+  }
+
+  const randomlySelectRestaurant = () => {
+
+    const randomSelection = restaurantSuggestions[Math.floor(Math.random() * restaurantSuggestions.length)];
+    setRandomRestaurant(randomSelection);
+
+    // Open modal
+    const modal = document.getElementById('randomlySelectedRestaurant');
+    modal.showModal();
   }
 
   // All restaurants display
@@ -595,11 +659,41 @@ function App(props) {
       {restaurantSuggestions
         ?
         <div className='restaurantSuggestionsContainer'>
+
+          <div className='chooseRandomRestaurant'>
+            <button onClick={randomlySelectRestaurant} id="openRandomlySelectedRestaurant">Choose For Me</button>
+          </div>
+
           {restaurantSuggestions.map(restaurant => {
             return (
               <a href={`restaurants/${restaurant.id}`} className='individualRestaurant' key={restaurant.id}>
-                <p className='restaurantName'>{restaurant.name}</p>
-                <p>Rating: {restaurant.rating}</p>
+                <img className='imageIcon' src={restaurant.image_url} alt={restaurant.name} width='100' height='100' ></img>
+                <div className='restaurantInfo'>
+                  <p className='restaurantName'>{restaurant.name}</p>
+                  <p><Rating 
+                    id='rating'
+                    name="half-rating-read" 
+                    initialRating={restaurant.rating} 
+                    precision={0.5} 
+                    emptySymbol={['fa fa-star-o fa-2x']}
+                    fullSymbol={['fa fa-star fa-2x']}
+                    readonly />
+                  </p>
+                  
+                  <p>{restaurant.categories.map((category, i) => {
+
+                    if(i === restaurant.categories.length - 1) {
+                        return (
+                            <span className='restaurantCategory' key={category.title}> {category.title}</span>
+                        )
+                    } else {
+                      return (
+                          <span className='restaurantCategory' key={category.alias}> {category.title} </span>
+                      )
+                  }
+                  })}
+                    </p>
+                </div>
               </a>
             )
             
@@ -615,9 +709,14 @@ function App(props) {
   const handleFormReset = () => {
     // Reset cuisine choice for user1 and user2
     cuisineChoice.current = {
-      user1: '',
-      user2: ''
+      user1: null,
+      user2: null
     }
+    // Reset location string choice for user1 and user 2
+    locationStringChoice.current = {
+      user1: null,
+      user2: null
+    };
     // Reset location coordinate choice for user1 and user2
     locationCoordinateChoice.current = {
       user1: { latitude: null, longitude: null },
@@ -628,19 +727,18 @@ function App(props) {
       user1: { radius: null, units: 'Mi' },
       user2: { radius: null, units: 'Mi' }
     }
-    // TODO: Reset open now choice for user1 and user2
+    // Reset open now choice for user1 and user2
+    openChoice.current = {
+      user1: null,
+      user2: null
+    }
 
     // Reset price choice for user1 and user2
     priceChoice.current = {
-      user1: '',
-      user2: ''
+      user1: null,
+      user2: null
     }
 
-    // Reset rating choice for user1 and user2
-    ratingChoice.current = {
-      user1: '',
-      user2: ''
-    }
     // Reset form fields
     const form = document.getElementById('credentialsForm');
     form.reset();
@@ -650,21 +748,99 @@ function App(props) {
     if(message){
       message.textContent = '';
     };
+    setUnexpectedError();
+
+    // Remove restaurants from local storage
+    localStorage.removeItem('restaurants');
 
     // Clear any search results
-    setRestaurantSuggestions([]);
+    setRestaurantSuggestions();
+
+    // Reset user inputs form
+    setUserInputsForm(
+      <>
+        <form id='credentialsForm' onSubmit={generateRestaurants}>
+        <div class='column' className='userOne'>
+        {generateCredentialsSection('user1')}
+        </div>
+        <div class='column' className='formInputType'>
+        <p>Cuisine Type</p>
+        <p>Location</p>
+        <p>Distance Within</p>
+        <p>Open Now</p>
+        <p>Price</p>
+        </div>  
+        <div class='column' className='userTwo'>
+          {generateCredentialsSection('user2')}
+        </div>
+        </form>
+        <div className='FormButtonOptions'>
+          <button className='submitSearch' form='credentialsForm'>Search</button>
+          <button className='resetSearch' onClick={handleFormReset}>Reset</button>
+        </div>
+        
+      </>
+    )
   };
 
   return (
     <div className="App">
-      <header>
-        <h1>Yelp For Couples</h1>
-      </header>
+    <header className='headerBar'>
+      <h1>Yelp For Couples</h1>
+    </header>
+      
       <div className="credentialsInputContainer">
         {userInputsForm}
         <p id="error-message"></p>
+        {unexpectedError}
       </div>
       {restaurantsDisplay}
+
+      <dialog id='randomlySelectedRestaurant'>
+        {randomRestaurant
+          ?
+          <div className='randomRestaurantInfo'>
+            <a href={`/restaurants/${randomRestaurant.id}`}  className='individualRestaurant'>
+              <img className='imageIcon' src={randomRestaurant.image_url} alt={randomRestaurant.name} width='150' height='150' ></img>
+                <div className='restaurantInfo'>
+                  <p className='restaurantName'>{randomRestaurant.name}</p>
+                  <p><Rating 
+                    name="half-rating-read" 
+                    initialRating={randomRestaurant.rating} 
+                    precision={0.5} 
+                    emptySymbol={['fa fa-star-o fa-2x medium']}
+                    fullSymbol={['fa fa-star fa-2x medium']}
+                    
+                    readonly />
+                  </p>
+                  
+                  <p>{randomRestaurant.categories.map((category, i) => {
+
+                    if(i === randomRestaurant.categories.length - 1) {
+                        return (
+                            <span className='restaurantCategory' key={category.title}> {category.title}</span>
+                        )
+                    } else {
+                      return (
+                          <span className='restaurantCategory' key={category.alias}> {category.title} </span>
+                      )
+                  }
+                  })}
+                    </p>
+                </div>
+            </a>
+          </div>
+          :
+          <></>
+        }
+        <div className='closeModalButton'>
+          <button id='closeRandomlySelectedRestaurant' onClick={() => {
+            const modal = document.getElementById('randomlySelectedRestaurant');
+            modal.close();
+          }}>Close</button>
+        </div>
+      </dialog>
+
     </div>
   );
 }
