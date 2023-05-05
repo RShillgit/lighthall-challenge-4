@@ -430,7 +430,7 @@ function App(props) {
               <input type="text" id={`location-input-${user}`} className='input-location' 
                 readOnly={true} ref={locationInputRef}
                 />
-              <button type='button' title='Remove' onClick={() => removeUserLocation(user)}><i class="fa fa-location-arrow" aria-hidden="true"></i></button>
+              <button className='locationButton' type='button' title='Remove' onClick={() => removeUserLocation(user)}><i class="fa fa-location-arrow" aria-hidden="true"></i></button>
             </label>
           </>
           :
@@ -443,7 +443,7 @@ function App(props) {
                   <input type="text" id={`location-input-${user}`} className='input-location' 
                   readOnly={true} ref={locationInputRef}
                   />
-                  <button type='button' title='Remove' onClick={() => removeUserLocation(user)}><i class="fa fa-location-arrow" aria-hidden="true"></i></button>
+                  <button className='locationButton' type='button' title='Remove' onClick={() => removeUserLocation(user)}><i class="fa fa-location-arrow" aria-hidden="true"></i></button>
                 </label>
               </>
               :
@@ -755,8 +755,8 @@ function App(props) {
                     name="half-rating-read" 
                     initialRating={randomRestaurant.rating} 
                     precision={0.5} 
-                    emptySymbol={['fa fa-star-o fa-2x medium']}
-                    fullSymbol={['fa fa-star fa-2x medium']}
+                    emptySymbol={['fa fa-star-o fa-1x medium']}
+                    fullSymbol={['fa fa-star fa-1x medium']}
                     
                     readonly />
                   </p>
