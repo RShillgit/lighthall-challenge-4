@@ -65,8 +65,13 @@ const SingleRestaurant = (props) => {
     }
 
     return (
-        <div className='currentRestaurantContainer'>
-            {currentRestaurant
+        <div className="App">
+        <header>
+            <h1 className='headerBar'>Yelp For Couples</h1>
+        </header>
+
+        <div  className='currentRestaurantContainer'>
+        {currentRestaurant
                 ?
                 <div className='currentRestaurant'>
                     <a href={currentRestaurant.url} target="_blank" rel="noreferrer">
@@ -74,16 +79,16 @@ const SingleRestaurant = (props) => {
                     </a>
                 
                     <p>
-                        <span>{currentRestaurant.price} </span> * 
+                        <span>{currentRestaurant.price} </span> &#x2022; 
                         {currentRestaurant.categories.map((category, i) => {
 
                             if(i === currentRestaurant.categories.length - 1) {
                                 return (
-                                    <span key={category.alias}> {category.title}</span>
+                                    <span className='restaurantCategory' key={category.alias}> {category.title}</span>
                                 )
                             } else {
                                 return (
-                                    <span key={category.alias}> {category.title}, </span>
+                                    <span className='restaurantCategory' key={category.alias}> {category.title} </span>
                                 )
                             }
                         })}
@@ -92,9 +97,9 @@ const SingleRestaurant = (props) => {
                     <div className="restaurantHours">
                         {currentRestaurant.hours[0].is_open_now
                             ?
-                            <span>Open</span>
+                            <span className="openClose">Open</span>
                             :
-                            <span>Closed</span>
+                            <span className="openClose">Closed</span>
                         }
                         {currentRestaurant.hours[0].open.map(dayHours => {
 
@@ -121,6 +126,9 @@ const SingleRestaurant = (props) => {
             <a href='/'>
                 <button>Home</button>
             </a>
+        </div>
+        
+            
         </div>
     )
 
