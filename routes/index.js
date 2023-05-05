@@ -34,7 +34,6 @@ router.post('/api', (req, res) => {
   const location2 = req.body.formattedData.formattedLocations.user2;
   const radius = req.body.formattedData.formattedRadius;
   const price = req.body.formattedData.formattedPrice;
-  const rating = req.body.formattedData.formattedRating;
 
   async.parallel(
     {

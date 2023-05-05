@@ -292,6 +292,54 @@ function App(props) {
     );
   };
 
+  const removeUserLocation = (user) => {
+
+    if (user === 'user1') {
+      locationCoordinateChoice.current = {
+        ...locationCoordinateChoice.current,
+        user1: {
+          latitude: null,
+          longitude: null
+        }
+      }
+    }
+    else if (user === 'user2') {
+      locationCoordinateChoice.current = {
+        ...locationCoordinateChoice.current,
+        user2: {
+          latitude: null,
+          longitude: null
+        }
+      }
+    }
+
+    // Alter input associated with this user
+    const userLocationInput = document.getElementById(`location-input-${user}`);
+    userLocationInput.value = '';
+
+    setUserInputsForm(
+      <>
+        <form id='credentialsForm' onSubmit={generateRestaurants}>
+        <div class='column' className='userOne'>
+        {generateCredentialsSection('user1')}
+        </div>
+        <div class='column' className='formInputType'>
+        <p>Cuisine Type</p>
+        <p>Location</p>
+        <p>Distance Within</p>
+        <p>Open Now</p>
+        <p>Price</p>
+        </div>  
+        <div class='column' className='userTwo'>
+          {generateCredentialsSection('user2')}
+        </div>
+        </form>
+        <button className='submitSearch' form='credentialsForm'>Search</button>
+        <button className='resetSearch' onClick={handleFormReset}>Reset</button>
+      </>
+    )
+  }
+
   // Creates input secion for each user
   const generateCredentialsSection = (user) => {
 
@@ -329,20 +377,20 @@ function App(props) {
               <input type="text" id={`location-input-${user}`} className='input-location' 
                 readOnly={true} ref={locationInputRef}
                 />
-              <button type='button' title='Remove'><i class="fa fa-location-arrow" aria-hidden="true"></i></button>
+              <button type='button' title='Remove' onClick={() => removeUserLocation(user)}><i class="fa fa-location-arrow" aria-hidden="true"></i></button>
             </label>
           </>
           :
           <>
             {(user === 'user2' && locationCoordinateChoice.current.user2.latitude && locationCoordinateChoice.current.user2.longitude)
               ?
-              // Else if user2 is using current location display normal input
+              // Else if user2 is using current location
               <>
                 <label>
                   <input type="text" id={`location-input-${user}`} className='input-location' 
                   readOnly={true} ref={locationInputRef}
                   />
-                  <button type='button' title='Remove'><i class="fa fa-location-arrow" aria-hidden="true"></i></button>
+                  <button type='button' title='Remove' onClick={() => removeUserLocation(user)}><i class="fa fa-location-arrow" aria-hidden="true"></i></button>
                 </label>
               </>
               :
