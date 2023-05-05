@@ -1,10 +1,10 @@
 const NotFound = (props) => {
 
     return (
-        <div>
-            <h1>404 Not Found</h1>
+        <div className="errorContainer">
+            <h1 className="errorMessage">404 Not Found</h1>
             <a href="/">
-                <button>Home</button>
+                <button className="errorButton">Home</button>
             </a>
         </div>
     )

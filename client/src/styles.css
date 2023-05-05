@@ -273,3 +273,30 @@ gap: 1rem;
 .formButtonOptions {
     display: flex;  
 }
+
+.errorContainer {
+    display: flex;
+    flex-direction: column;
+    margin: auto;
+    width: 50%;
+    padding: 10px;
+    text-align: center;
+    justify-content: center;
+}
+
+.errorMessage {
+    padding-top: 250px;
+    padding-bottom: 50px;
+}
+
+.errorButton {
+    margin-top: 10px;
+    margin-bottom: 10px;
+    color: white;
+    width: 125px;
+    height: 37.5px;
+    border-style: none;
+    background-color: #E00707;
+    cursor: pointer;
+    transition: transform 0.3s ease 0s;
+}
