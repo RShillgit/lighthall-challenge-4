@@ -237,7 +237,7 @@ const SingleRestaurant = (props) => {
                                 ?
                                 <span className="openClose">Open</span>
                                 :
-                                <span className="openClose">Closed</span>
+                                <span className="closeOpen">Closed</span>
                             }
                             {hoursOfOperation.current.map(dayHours => {
                                 // Javascript day indexes 0=sunday, 6=saturday
