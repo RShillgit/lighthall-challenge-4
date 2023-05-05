@@ -87,6 +87,10 @@ gap: 1rem;
     box-shadow: 0px 5px 5px black;
 }
 
+.unexpectedError {
+    margin-top: 2rem;
+}
+
 /*all results*/
 .restaurantSuggestionsContainer {
     display: flex;
