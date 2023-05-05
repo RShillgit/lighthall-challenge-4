@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import cuisineTypes from './components/cuisineType';
 import cuisineMap  from './components/cuisineMap';
 import './styles.css';
+import Rating from 'react-rating'
 
 function App(props) {
 
@@ -585,7 +586,8 @@ function App(props) {
                 <img className='imageIcon' src={restaurant.image_url} alt={restaurant.name} width='150' height='150' ></img>
                 <div className='restaurantInfo'>
                   <p className='restaurantName'>{restaurant.name}</p>
-                  <p>Rating: {restaurant.rating}</p>
+                  <p><Rating name="half-rating-read" initialRating={restaurant.rating} precision={0.5} readonly /></p>
+                  
                   <p>{restaurant.categories.map((category, i) => {
 
                     if(i === restaurant.categories.length - 1) {
