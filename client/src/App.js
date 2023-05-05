@@ -321,8 +321,10 @@ function App(props) {
             {generateCredentialsSection('user2')}
           </div>
           </form>
+          <div className='FormButtonOptions'>
           <button className='submitSearch' form='credentialsForm'>Search</button>
           <button className='resetSearch' onClick={handleFormReset}>Reset</button>
+        </div>
           </>
         )
       },
@@ -706,8 +708,11 @@ function App(props) {
           {generateCredentialsSection('user2')}
         </div>
         </form>
-        <button className='submitSearch' form='credentialsForm'>Search</button>
-        <button className='resetSearch' onClick={handleFormReset}>Reset</button>
+        <div className='FormButtonOptions'>
+          <button className='submitSearch' form='credentialsForm'>Search</button>
+          <button className='resetSearch' onClick={handleFormReset}>Reset</button>
+        </div>
+        
       </>
     )
   };
