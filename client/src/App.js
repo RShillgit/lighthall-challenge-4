@@ -37,6 +37,11 @@ function App(props) {
     },
   })
 
+  const openChoice = useRef({
+    user1: null,
+    user2: null
+  })
+
   const priceChoice = useRef({
     user1: null,
     user2: null
@@ -195,7 +200,36 @@ function App(props) {
       radiiAverage = Math.ceil(userRadiiValues.reduce((sum, value) => (sum + value)) / userRadiiValues.length);  
     } else radiiAverage = 40000; // Max Radius Value
 
-    // TODO: Format Open now
+    // Format Open now
+    let formattedOpenNow = {
+      user1: null,
+      user2: null,
+    }
+
+    if (openChoice.current.user1 === 'Yes') {
+      formattedOpenNow = {
+        ...formattedOpenNow,
+        user1: true
+      }
+    }
+    if (openChoice.current.user2 === 'Yes') {
+      formattedOpenNow = {
+        ...formattedOpenNow,
+        user2: true
+      }
+    }
+    if (openChoice.current.user1 === 'No') {
+      formattedOpenNow = {
+        ...formattedOpenNow,
+        user1: false
+      }
+    }
+    if (openChoice.current.user2 === 'No') {
+      formattedOpenNow = {
+        ...formattedOpenNow,
+        user2: false
+      }
+    }
 
     // Format Price into array of integers & handle errors
     let formattedPrice = [];
@@ -212,6 +246,7 @@ function App(props) {
       formattedCuisines,
       formattedLocations,
       formattedRadius: radiiAverage,
+      formattedOpenNow,
       formattedPrice,
     }
   }
@@ -292,6 +327,55 @@ function App(props) {
     );
   };
 
+  // Removes users longitude and latitude
+  const removeUserLocation = (user) => {
+
+    if (user === 'user1') {
+      locationCoordinateChoice.current = {
+        ...locationCoordinateChoice.current,
+        user1: {
+          latitude: null,
+          longitude: null
+        }
+      }
+    }
+    else if (user === 'user2') {
+      locationCoordinateChoice.current = {
+        ...locationCoordinateChoice.current,
+        user2: {
+          latitude: null,
+          longitude: null
+        }
+      }
+    }
+
+    // Alter input associated with this user
+    const userLocationInput = document.getElementById(`location-input-${user}`);
+    userLocationInput.value = '';
+
+    setUserInputsForm(
+      <>
+        <form id='credentialsForm' onSubmit={generateRestaurants}>
+        <div class='column' className='userOne'>
+        {generateCredentialsSection('user1')}
+        </div>
+        <div class='column' className='formInputType'>
+        <p>Cuisine Type</p>
+        <p>Location</p>
+        <p>Distance Within</p>
+        <p>Open Now</p>
+        <p>Price</p>
+        </div>  
+        <div class='column' className='userTwo'>
+          {generateCredentialsSection('user2')}
+        </div>
+        </form>
+        <button className='submitSearch' form='credentialsForm'>Search</button>
+        <button className='resetSearch' onClick={handleFormReset}>Reset</button>
+      </>
+    )
+  }
+
   // Creates input secion for each user
   const generateCredentialsSection = (user) => {
 
@@ -329,20 +413,20 @@ function App(props) {
               <input type="text" id={`location-input-${user}`} className='input-location' 
                 readOnly={true} ref={locationInputRef}
                 />
-              <button type='button' title='Remove'><i class="fa fa-location-arrow" aria-hidden="true"></i></button>
+              <button type='button' title='Remove' onClick={() => removeUserLocation(user)}><i class="fa fa-location-arrow" aria-hidden="true"></i></button>
             </label>
           </>
           :
           <>
             {(user === 'user2' && locationCoordinateChoice.current.user2.latitude && locationCoordinateChoice.current.user2.longitude)
               ?
-              // Else if user2 is using current location display normal input
+              // Else if user2 is using current location
               <>
                 <label>
                   <input type="text" id={`location-input-${user}`} className='input-location' 
                   readOnly={true} ref={locationInputRef}
                   />
-                  <button type='button' title='Remove'><i class="fa fa-location-arrow" aria-hidden="true"></i></button>
+                  <button type='button' title='Remove' onClick={() => removeUserLocation(user)}><i class="fa fa-location-arrow" aria-hidden="true"></i></button>
                 </label>
               </>
               :
@@ -438,7 +522,22 @@ function App(props) {
         </label>
 
         <label>
-          <select>
+          <select className='credentialsSelection' onChange={(e) => {
+              // User1 Selection
+              if (user === 'user1') {
+                openChoice.current = {
+                  ...openChoice.current,
+                  user1: e.target.value
+                }
+              }
+              // User2 Selection
+              else if (user === 'user2') {
+                openChoice.current = {
+                  ...openChoice.current,
+                  user2: e.target.value
+                }
+              }
+          }}>
             <option value="">Any</option>
             <option value="Yes">Yes</option>
             <option value="No">No</option>
