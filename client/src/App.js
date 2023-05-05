@@ -748,7 +748,7 @@ function App(props) {
           ?
           <div className='randomRestaurantInfo'>
             <a href={`/restaurants/${randomRestaurant.id}`}  className='individualRestaurant'>
-              <img className='imageIcon' src={randomRestaurant.image_url} alt={randomRestaurant.name} width='150' height='150' ></img>
+              <img className='imageIcon' src={randomRestaurant.image_url} alt={randomRestaurant.name} width='100' height='100' ></img>
                 <div className='restaurantInfo'>
                   <p className='restaurantName'>{randomRestaurant.name}</p>
                   <p><Rating 
