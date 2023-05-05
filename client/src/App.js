@@ -457,7 +457,7 @@ function App(props) {
                     required={true}
                     ref={locationInputRef} // add a ref to access the DOM node later
                   />
-                  <button type='button' title='Use Current Location' onClick={() => getUserLocation(user)}><i class="fa fa-location-arrow" aria-hidden="true"></i></button>
+                  <button className='locationButton' type='button' title='Use Current Location' onClick={() => getUserLocation(user)}><i class="fa fa-location-arrow" aria-hidden="true"></i></button>
                 </label>
               </>
             }
