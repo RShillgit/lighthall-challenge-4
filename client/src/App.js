@@ -54,7 +54,9 @@ function App(props) {
 
   const [restaurantSuggestions , setRestaurantSuggestions] = useState();
   const [restaurantsDisplay, setRestaurantsDisplay] = useState();
- 
+
+  const message = document.getElementById('error-message');
+
   // On Mount
   useEffect(() => {
     // Check for restaurants in local storage
@@ -128,8 +130,16 @@ function App(props) {
     .then(data => {
       console.log(data)
       if (data.success) {
+        // Clear any error message
+        if(!message){
+          message.textContent = '';
+        };
         localStorage.setItem('restaurants', JSON.stringify(data.restaurants));
         setRestaurantSuggestions(data.restaurants)
+      }
+      else{
+        message.textContent = data.error + "\n\n Please Reset :)";
+        setRestaurantSuggestions([]);
       }
     })
     .catch(err => console.log(err))
@@ -582,6 +592,12 @@ function App(props) {
     const form = document.getElementById('credentialsForm');
     form.reset();
 
+    //Reset Error Message
+    //const message = document.getElementById('error-message');
+    if(message){
+      message.textContent = '';
+    };
+
     // Clear any search results
     setRestaurantSuggestions([]);
   };
@@ -593,6 +609,7 @@ function App(props) {
       </header>
       <div className="credentialsInputContainer">
         {userInputsForm}
+        <p id="error-message"></p>
       </div>
       {restaurantsDisplay}
     </div>
