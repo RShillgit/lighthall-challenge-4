@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
-import cuisineTypes from "./components/cuisineType"
+import { useEffect, useRef, useState } from 'react';
+import cuisineTypes from './components/cuisineType';
+import cuisineMap  from './components/cuisineMap';
 import './styles.css';
 
 function App(props) {
@@ -54,6 +55,8 @@ function App(props) {
   const [restaurantSuggestions , setRestaurantSuggestions] = useState();
   const [restaurantsDisplay, setRestaurantsDisplay] = useState();
 
+  const message = document.getElementById('error-message');
+
   // On Mount
   useEffect(() => {
     // Check for restaurants in local storage
@@ -82,6 +85,7 @@ function App(props) {
         </div>
         </form>
         <button className='submitSearch' form='credentialsForm'>Search</button>
+        <button className='resetSearch' onClick={handleFormReset}>Reset</button>
       </>
     )
   }, [locationCoordinateChoice])
@@ -100,6 +104,11 @@ function App(props) {
     })
 
   }, [userInputsForm]);
+
+  // Clear search results when component mounts or updates
+  useEffect(() => {
+    setRestaurantSuggestions([]);
+  }, []);
   
   // User inputs form submit
   const generateRestaurants = (e) => {
@@ -121,8 +130,16 @@ function App(props) {
     .then(data => {
       console.log(data)
       if (data.success) {
+        // Clear any error message
+        if(message){
+          message.textContent = '';
+        };
         localStorage.setItem('restaurants', JSON.stringify(data.restaurants));
         setRestaurantSuggestions(data.restaurants)
+      }
+      else{
+        message.textContent = data.error + "\n\n Please Reset :)";
+        setRestaurantSuggestions([]);
       }
     })
     .catch(err => console.log(err))
@@ -130,6 +147,19 @@ function App(props) {
 
   // Prepares user data to align with API format requirements
   const prepareUserData = () => {
+
+    // Format Cuisine Types
+    let user1Cuisine = null;
+    let user2Cuisine = null;
+
+    if (cuisineChoice.current.user1 !== null) {
+      user1Cuisine = cuisineMap[cuisineChoice.current.user1];
+    }
+    if (cuisineChoice.current.user2 !== null) {
+      user2Cuisine = cuisineMap[cuisineChoice.current.user2];
+    }
+
+    let formattedCuisines =  {user1: user1Cuisine, user2: user2Cuisine};
 
     // Format Location & handle errors
     const locationInputs = document.querySelectorAll('.input-location');
@@ -213,7 +243,7 @@ function App(props) {
     }
 
     return {
-      formattedCuisines: cuisineChoice.current,
+      formattedCuisines,
       formattedLocations,
       formattedRadius: radiiAverage,
       formattedPrice,
@@ -290,6 +320,7 @@ function App(props) {
           </div>
           </form>
           <button className='submitSearch' form='credentialsForm'>Search</button>
+          <button className='resetSearch' onClick={handleFormReset}>Reset</button>
           </>
         )
       },
@@ -527,6 +558,50 @@ function App(props) {
     </>
   )
 
+  //Reset Credential Section and Clear Results
+  const handleFormReset = () => {
+    // Reset cuisine choice for user1 and user2
+    cuisineChoice.current = {
+      user1: '',
+      user2: ''
+    }
+    // Reset location coordinate choice for user1 and user2
+    locationCoordinateChoice.current = {
+      user1: { latitude: null, longitude: null },
+      user2: { latitude: null, longitude: null }
+    }
+    // Reset radius choice for user1 and user2
+    radiusChoice.current = {
+      user1: { radius: null, units: 'Mi' },
+      user2: { radius: null, units: 'Mi' }
+    }
+    // TODO: Reset open now choice for user1 and user2
+
+    // Reset price choice for user1 and user2
+    priceChoice.current = {
+      user1: '',
+      user2: ''
+    }
+
+    // Reset rating choice for user1 and user2
+    ratingChoice.current = {
+      user1: '',
+      user2: ''
+    }
+    // Reset form fields
+    const form = document.getElementById('credentialsForm');
+    form.reset();
+
+    //Reset Error Message
+    //const message = document.getElementById('error-message');
+    if(message){
+      message.textContent = '';
+    };
+
+    // Clear any search results
+    setRestaurantSuggestions([]);
+  };
+
   return (
     <div className="App">
     <header className='headerBar'>
@@ -535,8 +610,8 @@ function App(props) {
       
       <div className="credentialsInputContainer">
         {userInputsForm}
+        <p id="error-message"></p>
       </div>
-
       {restaurantsDisplay}
     </div>
   );
