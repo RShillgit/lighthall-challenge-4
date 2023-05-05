@@ -67,7 +67,6 @@ const SingleRestaurant = (props) => {
                 })
                 .then(res => res.json())
                 .then(data => {
-                    console.log(data);
 
                     // Format hours of operation array
                     const currentHours = data.restaurant.hours[0].open;
@@ -99,12 +98,8 @@ const SingleRestaurant = (props) => {
 
     const formatRestaurantHours = (dayHours) => {
 
-        //tCXDUzDMjDhBfCAaA8dmCg
-
         let openTime = dayHours.start;
         let closeTime = dayHours.end;
-
-        console.log(dayHours)
 
         if(Number(openTime) > 1200) {
             openTime = openTime - 1200; 
