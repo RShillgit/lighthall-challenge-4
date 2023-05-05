@@ -102,6 +102,10 @@ gap: 1rem;
     text-decoration: none;
 }
 
+#rating {
+    color: orange;
+}
+
 .imageIcon {
     border-radius: 25px;
 }

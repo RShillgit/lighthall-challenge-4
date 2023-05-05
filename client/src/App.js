@@ -587,12 +587,12 @@ function App(props) {
                 <div className='restaurantInfo'>
                   <p className='restaurantName'>{restaurant.name}</p>
                   <p><Rating 
+                    id='rating'
                     name="half-rating-read" 
                     initialRating={restaurant.rating} 
                     precision={0.5} 
                     emptySymbol={['fa fa-star-o fa-2x medium']}
                     fullSymbol={['fa fa-star fa-2x medium']}
-                    
                     readonly />
                   </p>
                   
