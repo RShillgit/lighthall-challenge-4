@@ -1,31 +1,116 @@
+*{
+    box-sizing:border-box;
+    margin: 0;
+    padding: 0;
+}
+
+button {
+    cursor: pointer;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.25em;
+    letter-spacing: .05em;
+}
+
+.column {
+    float: left;
+    width: 33.33%;
+}
+
+.headerBar {
+    margin-bottom: 50px;
+    background-color: #E00707;
+    padding: 25px;
+    color: white;
+}
+
+
 /* Credentials Input Section */
 .credentialsInputContainer {
-    border: 1px solid black;
-    padding: 1rem;
+    margin: auto;
+    width: 50%;
+    padding: 2rem;
     display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
+    background-color: rgb(221,220,223);
 }
 #credentialsForm {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
+    display: flex;
+}
+
+.formInputType {
+padding: 0 25px 0;
+display: flex;
+flex-direction: column;    
+align-items: center;
+gap: 1rem;
 }
 
 .userCredentials {
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-end;
     gap: 1rem;
 }
 
+.submitSearch {
+    margin-top: 50px;
+    color: white;
+    width: 125px;
+    height: 37.5px;
+    border-style: none;
+    background-color: #E00707;
+    cursor: pointer;
+    transition: transform 0.3s ease 0s;
+}
+
+.submitSearch:active {     
+    box-shadow: 0px 5px 5px black;
+}
+
+/*all results*/
 .restaurantSuggestionsContainer {
     display: flex;
     flex-direction: column;
     border: 1px solid black;
+    
 }
 .individualRestaurant {
+    color: black;
     margin: 8px;
-    padding: 8px;
-    border: 1px solid red;
+    padding: 15px 50px;
+    border-bottom: 1px solid black;
+    text-decoration: none;
+}
+
+.individualRestaurant:hover {
+    color: blue;
+}
+
+.restaurantName {
+    font-size: 1.25em;
+}
+
+/*current restaurant*/
+
+.currentRestaurantContainer {
+    margin: 50px;
+}
+.currentRestaurant a {
+    color: black;
+    text-decoration: none;
+}
+
+.openClose  {
+    color: #04C585;
+}
+
+.restaurantCategory {
+    border-radius: 5px;
+    margin: 4px;
+    background-color: #D9D9D9;
 }

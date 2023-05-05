@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
+import '../styles.css';
 
 const SingleRestaurant = (props) => {
 
@@ -145,25 +146,30 @@ const SingleRestaurant = (props) => {
     }
 
     return (
-        <div>
-            {(currentRestaurant)
+        <div className="App">
+        <header>
+            <h1 className='headerBar'>Yelp For Couples</h1>
+        </header>
+
+        <div  className='currentRestaurantContainer'>
+        {currentRestaurant
                 ?
-                <div>
+                <div className='currentRestaurant'>
                     <a href={currentRestaurant.url} target="_blank" rel="noreferrer">
-                        <h1>{currentRestaurant.name}</h1>
+                        <h1 className='currentName'>{currentRestaurant.name}</h1>
                     </a>
                 
                     <p>
-                        <span>{currentRestaurant.price} </span> * 
+                        <span>{currentRestaurant.price} </span> &#x2022; 
                         {currentRestaurant.categories.map((category, i) => {
 
                             if(i === currentRestaurant.categories.length - 1) {
                                 return (
-                                    <span key={category.alias}> {category.title}</span>
+                                    <span className='restaurantCategory' key={category.alias}> {category.title}</span>
                                 )
                             } else {
                                 return (
-                                    <span key={category.alias}> {category.title}, </span>
+                                    <span className='restaurantCategory' key={category.alias}> {category.title} </span>
                                 )
                             }
                         })}
@@ -172,9 +178,9 @@ const SingleRestaurant = (props) => {
                     <div className="restaurantHours">
                         {currentRestaurant.hours[0].is_open_now
                             ?
-                            <span>Open</span>
+                            <span className="openClose">Open</span>
                             :
-                            <span>Closed</span>
+                            <span className="openClose">Closed</span>
                         }
                         {hoursOfOperation.current.map(dayHours => {
 
@@ -201,6 +207,9 @@ const SingleRestaurant = (props) => {
             <a href='/'>
                 <button>Home</button>
             </a>
+        </div>
+        
+            
         </div>
     )
 
