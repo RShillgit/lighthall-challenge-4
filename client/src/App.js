@@ -113,59 +113,78 @@ function App(props) {
   }, [userInputsForm]);
   
   // User inputs form submit
-  const generateRestaurants = async(e) => {
-    const preparedData = await prepareUserData();
-    if (!preparedData.formattedLocations.user1 || !preparedData.formattedLocations.user2) {
+  const generateRestaurants = (e) => {
+    e.preventDefault();
+
+    const locationInputs = document.querySelectorAll('.input-location');
+    let user1Location = locationInputs[0].value;
+    let user2Location = locationInputs[1].value;
+
+    // Check locations
+    checkLocationString(user1Location, user2Location)
+    // Locations are valid
+    .then((results) => {
+      if (results) {
+        localStorage.removeItem('restaurants');
+      
+        // Prepare user data for API
+        const formattedData = prepareUserData();
+    
+        fetch(`${props.serverURL}/api`, {
+          method: 'POST',
+          headers: { "Content-Type": "application/json" },
+          mode: 'cors',
+          body: JSON.stringify({formattedData})
+        })
+        .then(res => res.json())
+        .then(data => {
+          console.log(data)
+          if (data.success) {
+            // Clear any error message
+            if(message){
+              message.textContent = '';
+            };
+            setUnexpectedError();
+            localStorage.setItem('restaurants', JSON.stringify(data.restaurants));
+            setRestaurantSuggestions(data.restaurants)
+          }
+          else{
+            message.textContent = data.error + "\n\n Please Reset :)";
+            setRestaurantSuggestions();
+          }
+        })
+        .catch(err => {
+          console.log("error", err)
+          setUnexpectedError(
+            <div className='unexpectedError'>
+              <p>Oops, an unexpected error occurred, please reset {":)"}</p>
+            </div>
+          )
+        })
+      }
+    })
+    // Locations are invalid
+    .catch(err => {
+      console.log(err)
+      // Location is invalid
       cuisineChoice.current = { user1: null, user2: null };
       radiusChoice.current = { user1: {}, user2: {} };
       priceChoice.current = { user1: [], user2: [] };
       locationCoordinateChoice.current = { user1: null, user2: null };
       locationStringChoice.current = { user1: null, user2: null };
-      alert('Please enter valid locations');
-      return;
-    }
 
-    e.preventDefault();
-
-    localStorage.removeItem('restaurants');
-    
-    // Prepare user data for API
-    const formattedData = prepareUserData();
-
-    fetch(`${props.serverURL}/api`, {
-      method: 'POST',
-      headers: { "Content-Type": "application/json" },
-      mode: 'cors',
-      body: JSON.stringify({formattedData})
-    })
-    .then(res => res.json())
-    .then(data => {
-      console.log(data)
-      if (data.success) {
-        // Clear any error message
-        if(message){
-          message.textContent = '';
-        };
-        setUnexpectedError();
-        localStorage.setItem('restaurants', JSON.stringify(data.restaurants));
-        setRestaurantSuggestions(data.restaurants)
-      }
-      else{
-        message.textContent = data.error + "\n\n Please Reset :)";
-        setRestaurantSuggestions([]);
-      }
-    })
-    .catch(err => {
+      // Set error message
       setUnexpectedError(
         <div className='unexpectedError'>
-          <p>Oops, an unexpected error occurred, please reset {":)"}</p>
+          <p>{err}</p>
         </div>
       )
+      return;
     })
   }
 
   // Prepares user data to align with API format requirements
-  const prepareUserData = async() => {
+  const prepareUserData = () => {
 
     // Format Cuisine Types
     let user1Cuisine = null;
@@ -179,7 +198,6 @@ function App(props) {
     }
 
     let formattedCuisines =  {user1: user1Cuisine, user2: user2Cuisine};
-
       
     // Format Location & handle errors
     const locationInputs = document.querySelectorAll('.input-location');
@@ -187,44 +205,6 @@ function App(props) {
     let user2Location = locationInputs[1].value;
     if (user1Location === 'Using Current Location') user1Location = null;
     if (user2Location === 'Using Current Location') user2Location = null;
-
-    // Check if the locations are valid
-    let validLocations = true;
-    if (user1Location) {
-      const geocoder = new google.maps.Geocoder();
-      await new Promise((resolve, reject) => {
-        geocoder.geocode({ address: user1Location }, (results, status) => {
-          if (status !== 'OK') {
-            user1Location = null;
-            validLocations = false;
-          }
-          resolve();
-        });
-      });
-    }
-    if (user2Location) {
-      const geocoder = new google.maps.Geocoder();
-      await new Promise((resolve, reject) => {
-        geocoder.geocode({ address: user2Location }, (results, status) => {
-          if (status !== 'OK') {
-            user2Location = null;
-            validLocations = false;
-          }
-          resolve();
-        });
-      });
-    }
-
-    // If the locations are not valid, reset all the data and ask users to enter valid locations
-    if (!validLocations) {
-      cuisineChoice.current = { user1: null, user2: null };
-      radiusChoice.current = { user1: {}, user2: {} };
-      priceChoice.current = { user1: [], user2: [] };
-      locationCoordinateChoice.current = { user1: null, user2: null };
-      locationStringChoice.current = { user1: null, user2: null };
-      alert('Please enter valid locations');
-      return;
-    }
 
     locationStringChoice.current = {
       user1: user1Location,
@@ -317,6 +297,10 @@ function App(props) {
   
   // Gets users longitude and latitude
   const getUserLocation = (user) => {
+    console.log(user)
+
+    console.log(locationCoordinateChoice.current)
+    console.log(locationStringChoice.current)
 
     // Alter input associated with this user
     const userLocationInput = document.getElementById(`location-input-${user}`);
@@ -350,17 +334,17 @@ function App(props) {
           locationCoordinateChoice.current = {
             ...locationCoordinateChoice.current,
             user1: {
-              latitude: latitude,
-              longitude: longitude
+              longitude: longitude,
+              latitude: latitude
             }
           }
         }
-        else if (user === 'user2') {
+        if (user === 'user2') {
           locationCoordinateChoice.current = {
             ...locationCoordinateChoice.current,
             user2: {
-              latitude: latitude,
-              longitude: longitude
+              longitude: longitude,
+              latitude: latitude
             }
           }
         }
@@ -649,6 +633,57 @@ function App(props) {
     // Open modal
     const modal = document.getElementById('randomlySelectedRestaurant');
     modal.showModal();
+  }
+
+  // Checks if location string is a valid location
+  const checkLocationString = (user1Location, user2Location) => {
+    return new Promise(function(resolve, reject) {
+
+      const geocoder = new google.maps.Geocoder();
+
+      // User 1 and user 2 using coordinates
+      if (locationCoordinateChoice.current.user1.latitude && locationCoordinateChoice.current.user1.longitude
+        && locationCoordinateChoice.current.user2.latitude && locationCoordinateChoice.current.user2.longitude
+        ) {
+          resolve(true);
+      }
+      // Just user 1 using coordinates
+      else if (locationCoordinateChoice.current.user1.latitude && locationCoordinateChoice.current.user1.longitude) {
+        geocoder.geocode({'address': user2Location}, function(results, status) {
+          if (status === 'OK') {
+            resolve(true);
+          } else {
+            reject('Invalid Location')
+          }
+        })
+      }
+      // Just user 2 using coordinates
+      else if (locationCoordinateChoice.current.user2.latitude && locationCoordinateChoice.current.user2.longitude) {
+        geocoder.geocode({'address': user1Location}, function(results, status) {
+          if (status === 'OK') {
+            resolve(true);
+          } else {
+            reject('Invalid Location')
+          }
+        })
+      }
+      // Neither using coordinates
+      else {
+        geocoder.geocode({'address': user1Location}, function(results, status) {
+          if (status === 'OK') {
+            geocoder.geocode({'address': user2Location}, function(results, status) {
+              if (status === 'OK') {
+                resolve(true);
+              } else {
+                reject('Invalid Location')
+              }
+            })
+          } else {
+            reject('Invalid Location')
+          }
+        })
+      }
+    })
   }
 
   // All restaurants display
