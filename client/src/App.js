@@ -60,6 +60,8 @@ function App(props) {
 
   const message = document.getElementById('error-message');
 
+  const [unexpectedError, setUnexpectedError] = useState();
+
   // On Mount
   useEffect(() => {
     // Check for restaurants in local storage
@@ -117,7 +119,6 @@ function App(props) {
     
     // Prepare user data for API
     const formattedData = prepareUserData();
-    console.log(formattedData);
 
     fetch(`${props.serverURL}/api`, {
       method: 'POST',
@@ -141,7 +142,13 @@ function App(props) {
         setRestaurantSuggestions([]);
       }
     })
-    .catch(err => console.log(err))
+    .catch(err => {
+      setUnexpectedError(
+        <div className='unexpectedError'>
+          <p>Oops, an unexpected error occurred, please reset {":)"}</p>
+        </div>
+      )
+    })
   }
 
   // Prepares user data to align with API format requirements
@@ -687,12 +694,13 @@ function App(props) {
     if(message){
       message.textContent = '';
     };
+    setUnexpectedError();
 
     // Remove restaurants from local storage
     localStorage.removeItem('restaurants');
 
     // Clear any search results
-    setRestaurantSuggestions([]);
+    setRestaurantSuggestions();
 
     // Reset user inputs form
     setUserInputsForm(
@@ -730,6 +738,7 @@ function App(props) {
       <div className="credentialsInputContainer">
         {userInputsForm}
         <p id="error-message"></p>
+        {unexpectedError}
       </div>
       {restaurantsDisplay}
 

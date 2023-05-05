@@ -89,6 +89,10 @@ gap: 1rem;
     box-shadow: 0px 5px 5px black;
 }
 
+.unexpectedError {
+    margin-top: 2rem;
+}
+
 /*all results*/
 .restaurantSuggestionsContainer {
     display: flex;
@@ -134,6 +138,9 @@ gap: 1rem;
     margin-bottom: 8px;
     display: flex;
     justify-content: center;
+}
+.randomRestaurantInfo .individualRestaurant {
+    border: none;
 }
 .chooseRandomRestaurant #openRandomlySelectedRestaurant {
     color: white;
