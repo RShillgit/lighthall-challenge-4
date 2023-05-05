@@ -1,5 +1,6 @@
-import { useEffect, useRef, useState } from 'react'
-import cuisineTypes from "./components/cuisineType"
+import { useEffect, useRef, useState } from 'react';
+import cuisineTypes from './components/cuisineType';
+import cuisineMap  from './components/cuisineMap';
 import './styles.css';
 
 function App(props) {
@@ -130,6 +131,9 @@ function App(props) {
 
   // Prepares user data to align with API format requirements
   const prepareUserData = () => {
+    // Format Cuisine Types
+    let user1Cuisine = cuisineMap[cuisineChoice.current.user1];
+    let user2Cuisine = cuisineMap[cuisineChoice.current.user2];
 
     // Format Location & handle errors
     const locationInputs = document.querySelectorAll('.input-location');
@@ -213,7 +217,7 @@ function App(props) {
     }
 
     return {
-      formattedCuisines: cuisineChoice.current,
+      formattedCuisines: {user1:user1Cuisine ,user2:user2Cuisine },
       formattedLocations,
       formattedRadius: radiiAverage,
       formattedPrice,
