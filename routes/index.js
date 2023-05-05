@@ -2,24 +2,15 @@ var express = require('express');
 var router = express.Router();
 const async = require('async');
 
-// Client/App ID: 7GX4j2Oh3hQL61YdWbQvQw
-// API Key: fSxcLW2UZE5mCMllnwKp3ScxTtNq0WZtk97g8EC7JYigyFyqqox6gE2KWjYpdzkhag3UgEpcrbVOFlPa38o9_siMkhXqGYtS3sXjk0eWlMOuIB43J0pCgSa5S0ZRZHYx
-
 // Yelp SDK
 const sdk = require('api')('@yelp-developers/v1.0#deudoolf6o9f51');
 
-// *IMPORTANT* The API MUST INCLUDE a location, either a string or longitude/latitude
-// *IMPORTANT* Calls to this api must have an Authorization HTTP header with a value of "Bearer <API Key>""
 sdk.auth('Bearer fSxcLW2UZE5mCMllnwKp3ScxTtNq0WZtk97g8EC7JYigyFyqqox6gE2KWjYpdzkhag3UgEpcrbVOFlPa38o9_siMkhXqGYtS3sXjk0eWlMOuIB43J0pCgSa5S0ZRZHYx');
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.render('index', { title: 'Express' });
 });
-
-/* API INFORMATION ON BUSINESS SEARCHES
-https://docs.developer.yelp.com/reference/v3_business_search
-*/
 
 router.post('/api', (req, res) => {
 

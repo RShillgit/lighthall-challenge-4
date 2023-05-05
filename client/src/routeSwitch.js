@@ -5,7 +5,7 @@ import SingleRestaurant from './components/singleRestaurant';
 
 const RouteSwitch = () => {
 
-    const serverURL = 'http://localhost:8000';
+    const serverURL = 'https://bitter-eggnog-production.up.railway.app/'; // http://localhost:8000 in development
     const clientURL = 'http://localhost:3000'
 
     return (

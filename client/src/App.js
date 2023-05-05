@@ -139,7 +139,6 @@ function App(props) {
         })
         .then(res => res.json())
         .then(data => {
-          console.log(data)
           if (data.success) {
             // Clear any error message
             if(message){
@@ -155,7 +154,6 @@ function App(props) {
           }
         })
         .catch(err => {
-          console.log("error", err)
           setUnexpectedError(
             <div className='unexpectedError'>
               <p>Oops, an unexpected error occurred, please reset {":)"}</p>
@@ -337,9 +335,6 @@ function App(props) {
             }
           }
         }
-
-        console.log(locationCoordinateChoice.current)
-        console.log(locationStringChoice.current)
 
         setUserInputsForm(
           <>
