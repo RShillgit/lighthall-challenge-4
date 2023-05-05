@@ -591,8 +591,8 @@ function App(props) {
                     name="half-rating-read" 
                     initialRating={restaurant.rating} 
                     precision={0.5} 
-                    emptySymbol={['fa fa-star-o fa-2x medium']}
-                    fullSymbol={['fa fa-star fa-2x medium']}
+                    emptySymbol={['fa fa-star-o fa-2x']}
+                    fullSymbol={['fa fa-star fa-2x']}
                     readonly />
                   </p>
                   
