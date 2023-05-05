@@ -13,7 +13,7 @@ const SingleRestaurant = (props) => {
 
     // On mount
     useEffect(() => {
-
+        
         hoursOfOperation.current = [
             {
                 day: 0,
@@ -145,6 +145,47 @@ const SingleRestaurant = (props) => {
 
     }
 
+    const restaurantNavigation = () => {
+
+        // Find the index of the current restaurant is in the array of all restaurants
+        const currentRestaurantIndex = allRestaurants.current.findIndex(rest => rest.id === restaurantID);
+
+        // First restaurant
+        if (currentRestaurantIndex === 0) {
+            const nextRestaurantID = allRestaurants.current[currentRestaurantIndex + 1].id;
+            return (
+                <a className="restaurantNav" href={`/restaurants/${nextRestaurantID}`}>
+                    <button>Next</button>
+                </a>
+            )
+        }
+        // Last restaurant
+        else if (currentRestaurantIndex === allRestaurants.current.length - 1) {
+            const previousRestaurantID = allRestaurants.current[currentRestaurantIndex - 1].id;
+            return (
+                <a className="restaurantNav" href={`/restaurants/${previousRestaurantID}`}>
+                    <button>Previous</button>
+                </a>
+            )
+
+        }
+        // All the other restaurants
+        else {
+            const nextRestaurantID = allRestaurants.current[currentRestaurantIndex + 1].id;
+            const previousRestaurantID = allRestaurants.current[currentRestaurantIndex - 1].id;
+            return (
+                <>
+                    <a className="restaurantNav" href={`/restaurants/${previousRestaurantID}`}>
+                        <button>Previous</button>
+                    </a>
+                    <a className="restaurantNav" href={`/restaurants/${nextRestaurantID}`}>
+                        <button>Next</button>
+                    </a>
+                </>
+            )
+        }
+    }
+
     return (
         <div className="App">
         <header>
@@ -154,59 +195,73 @@ const SingleRestaurant = (props) => {
         <div  className='currentRestaurantContainer'>
         {currentRestaurant
                 ?
-                <div className='currentRestaurant'>
-                    <a href={currentRestaurant.url} target="_blank" rel="noreferrer">
-                        <h1 className='currentName'>{currentRestaurant.name}</h1>
+                <>
+                    <a className="restaurantNav" href='/'>
+                        <button>Home</button>
                     </a>
-                
-                    <p>
-                        <span>{currentRestaurant.price} </span> &#x2022; 
-                        {currentRestaurant.categories.map((category, i) => {
 
-                            if(i === currentRestaurant.categories.length - 1) {
-                                return (
-                                    <span className='restaurantCategory' key={category.title}> {category.title}</span>
-                                )
-                            } else {
-                                return (
-                                    <span className='restaurantCategory' key={category.alias}> {category.title}, </span>
-                                )
+                    <div className='currentRestaurant'>
+                        <a className="yelpLink" href={currentRestaurant.url} target="_blank" rel="noreferrer">
+                            <h1 className='currentName'>{currentRestaurant.name}</h1>
+                        </a>
+                    
+                        <p>
+                            <span>{currentRestaurant.price} </span> &#x2022; 
+                            {currentRestaurant.categories.map((category, i) => {
+
+                                if(i === currentRestaurant.categories.length - 1) {
+                                    return (
+                                        <span className='restaurantCategory' key={category.title}> {category.title}</span>
+                                    )
+                                } else {
+                                    return (
+                                        <span className='restaurantCategory' key={category.alias}> {category.title}, </span>
+                                    )
+                                }
+                            })}
+                        </p>
+
+                        <div className="restaurantHours">
+                            {currentRestaurant.hours[0].is_open_now
+                                ?
+                                <span className="openClose">Open</span>
+                                :
+                                <span className="openClose">Closed</span>
                             }
-                        })}
-                    </p>
+                            {hoursOfOperation.current.map(dayHours => {
+                                // Javascript day indexes 0=sunday, 6=saturday
+                                // API day indexes 0=monday, 6=sunday
+                                // Current day
+                                let currentDay = new Date().getDay() - 1;
+                                if (currentDay === -1) {
+                                    currentDay = 6;
+                                }
 
-                    <div className="restaurantHours">
-                        {currentRestaurant.hours[0].is_open_now
-                            ?
-                            <span className="openClose">Open</span>
-                            :
-                            <span className="openClose">Closed</span>
-                        }
-                        {hoursOfOperation.current.map(dayHours => {
+                                if(dayHours.day === currentDay) {
 
-                            // Current day
-                            const currentDay = new Date().getDay();
+                                    const storeHours = formatRestaurantHours(dayHours);
 
-                            if(dayHours.day === currentDay) {
+                                    return (<span key={dayHours.day}> {storeHours.openTime} - {storeHours.closeTime}</span>)
+                                }
+                                else return null;
+                            })}
+                        </div>
 
-                                const storeHours = formatRestaurantHours(dayHours);
-
-                                return (<span key={dayHours.day}> {storeHours.openTime} - {storeHours.closeTime}</span>)
-                            }
-                            else return null;
-                        })}
+                        <p>Rating: {currentRestaurant.rating}</p>
+                        <p>Phone: {currentRestaurant.display_phone}</p>
                     </div>
-
-                    <p>Rating: {currentRestaurant.rating}</p>
-                    <p>Phone: {currentRestaurant.display_phone}</p>
-                </div>
+                </>
                 :
                 <></>
             }
 
-            <a href='/'>
-                <button>Home</button>
-            </a>
+            {currentRestaurant && allRestaurants.current
+                ?
+                <div className="restaurantNavigation">
+                    {restaurantNavigation()}
+                </div>
+                :<></>
+            }
         </div>
         
             

@@ -104,11 +104,6 @@ function App(props) {
     })
 
   }, [userInputsForm]);
-
-  // Clear search results when component mounts or updates
-  useEffect(() => {
-    setRestaurantSuggestions([]);
-  }, []);
   
   // User inputs form submit
   const generateRestaurants = (e) => {
