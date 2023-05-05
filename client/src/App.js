@@ -56,6 +56,7 @@ function App(props) {
   const [restaurantsDisplay, setRestaurantsDisplay] = useState();
 
   const message = document.getElementById('error-message');
+  const google = window.google;
 
   // On Mount
   useEffect(() => {
@@ -111,7 +112,19 @@ function App(props) {
   }, []);
   
   // User inputs form submit
-  const generateRestaurants = (e) => {
+  const generateRestaurants = async(e) => {
+    const preparedData = await prepareUserData();
+    if (!preparedData.formattedLocations.user1 || !preparedData.formattedLocations.user2) {
+      cuisineChoice.current = { user1: null, user2: null };
+      radiusChoice.current = { user1: {}, user2: {} };
+      priceChoice.current = { user1: [], user2: [] };
+      ratingChoice.current = { user1: null, user2: null };
+      locationCoordinateChoice.current = { user1: null, user2: null };
+      locationStringChoice.current = { user1: null, user2: null };
+      alert('Please enter valid locations');
+      return;
+    }
+
     e.preventDefault();
 
     localStorage.removeItem('restaurants');
@@ -146,7 +159,7 @@ function App(props) {
   }
 
   // Prepares user data to align with API format requirements
-  const prepareUserData = () => {
+  const prepareUserData = async() => {
 
     // Format Cuisine Types
     let user1Cuisine = null;
@@ -161,30 +174,70 @@ function App(props) {
 
     let formattedCuisines =  {user1: user1Cuisine, user2: user2Cuisine};
 
+      
     // Format Location & handle errors
     const locationInputs = document.querySelectorAll('.input-location');
     let user1Location = locationInputs[0].value;
     let user2Location = locationInputs[1].value;
-    if(user1Location === 'Using Current Location') user1Location = null;
-    if(user2Location === 'Using Current Location') user2Location = null;
-    
+    if (user1Location === 'Using Current Location') user1Location = null;
+    if (user2Location === 'Using Current Location') user2Location = null;
+
+    // Check if the locations are valid
+    let validLocations = true;
+    if (user1Location) {
+      const geocoder = new google.maps.Geocoder();
+      await new Promise((resolve, reject) => {
+        geocoder.geocode({ address: user1Location }, (results, status) => {
+          if (status !== 'OK') {
+            user1Location = null;
+            validLocations = false;
+          }
+          resolve();
+        });
+      });
+    }
+    if (user2Location) {
+      const geocoder = new google.maps.Geocoder();
+      await new Promise((resolve, reject) => {
+        geocoder.geocode({ address: user2Location }, (results, status) => {
+          if (status !== 'OK') {
+            user2Location = null;
+            validLocations = false;
+          }
+          resolve();
+        });
+      });
+    }
+
+    // If the locations are not valid, reset all the data and ask users to enter valid locations
+    if (!validLocations) {
+      cuisineChoice.current = { user1: null, user2: null };
+      radiusChoice.current = { user1: {}, user2: {} };
+      priceChoice.current = { user1: [], user2: [] };
+      ratingChoice.current = { user1: null, user2: null };
+      locationCoordinateChoice.current = { user1: null, user2: null };
+      locationStringChoice.current = { user1: null, user2: null };
+      alert('Please enter valid locations');
+      return;
+    }
+
     locationStringChoice.current = {
       user1: user1Location,
       user2: user2Location,
-    }
+    };
 
-    let formattedLocations = {...locationStringChoice.current};
+    let formattedLocations = { ...locationStringChoice.current };
     if (!formattedLocations.user1) {
       formattedLocations = {
         ...formattedLocations,
-        user1: locationCoordinateChoice.current.user1
-      }
+        user1: locationCoordinateChoice.current.user1,
+      };
     }
     if (!formattedLocations.user2) {
       formattedLocations = {
         ...formattedLocations,
-        user2: locationCoordinateChoice.current.user2
-      }
+        user2: locationCoordinateChoice.current.user2,
+      };
     }
 
     // Format Radii into average radius & handle errors
