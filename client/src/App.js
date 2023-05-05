@@ -54,7 +54,7 @@ function App(props) {
 
   const [restaurantSuggestions , setRestaurantSuggestions] = useState();
   const [restaurantsDisplay, setRestaurantsDisplay] = useState();
-
+ 
   // On Mount
   useEffect(() => {
     // Check for restaurants in local storage
@@ -83,6 +83,7 @@ function App(props) {
         </div>
         </form>
         <button className='submitSearch' form='credentialsForm'>Search</button>
+        <button className='resetSearch' onClick={handleFormReset}>Reset</button>
       </>
     )
   }, [locationCoordinateChoice])
@@ -131,6 +132,7 @@ function App(props) {
 
   // Prepares user data to align with API format requirements
   const prepareUserData = () => {
+
     // Format Cuisine Types
     let user1Cuisine = null;
     let user2Cuisine = null;
@@ -303,6 +305,7 @@ function App(props) {
           </div>
           </form>
           <button className='submitSearch' form='credentialsForm'>Search</button>
+          <button className='resetSearch' onClick={handleFormReset}>Reset</button>
           </>
         )
       },
@@ -540,17 +543,52 @@ function App(props) {
     </>
   )
 
+  //Reset Credential Section and Clear Results
+  const handleFormReset = () => {
+    // Reset cuisine choice for user1 and user2
+    cuisineChoice.current = {
+      user1: '',
+      user2: ''
+    }
+    // Reset location coordinate choice for user1 and user2
+    locationCoordinateChoice.current = {
+      user1: { latitude: null, longitude: null },
+      user2: { latitude: null, longitude: null }
+    }
+    // Reset radius choice for user1 and user2
+    radiusChoice.current = {
+      user1: { radius: null, units: 'Mi' },
+      user2: { radius: null, units: 'Mi' }
+    }
+    // TODO: Reset open now choice for user1 and user2
+
+    // Reset price choice for user1 and user2
+    priceChoice.current = {
+      user1: '',
+      user2: ''
+    }
+
+    // Reset rating choice for user1 and user2
+    ratingChoice.current = {
+      user1: '',
+      user2: ''
+    }
+    // Reset form fields
+    const form = document.getElementById('credentialsForm');
+    form.reset();
+
+    // Clear any search results
+    setRestaurantSuggestions([]);
+  };
+
   return (
     <div className="App">
-    <header>
-      <h1>Yelp For Couples</h1>
-    </header>
-       
-      
+      <header>
+        <h1>Yelp For Couples</h1>
+      </header>
       <div className="credentialsInputContainer">
         {userInputsForm}
       </div>
-
       {restaurantsDisplay}
     </div>
   );

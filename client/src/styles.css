@@ -72,6 +72,21 @@ gap: 1rem;
     box-shadow: 0px 5px 5px black;
 }
 
+.resetSearch {
+    margin-top: 10px;
+    color: white;
+    width: 125px;
+    height: 37.5px;
+    border-style: none;
+    background-color: #E00707;
+    cursor: pointer;
+    transition: transform 0.3s ease 0s;
+}
+
+.resetSearch:active {     
+    box-shadow: 0px 5px 5px black;
+}
+
 /*all results*/
 .restaurantSuggestionsContainer {
     display: flex;
