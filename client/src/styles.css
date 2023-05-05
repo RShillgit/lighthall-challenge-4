@@ -91,9 +91,8 @@ gap: 1rem;
 .restaurantSuggestionsContainer {
     display: flex;
     flex-direction: column;
-    border: 1px solid black;
-    
 }
+
 .individualRestaurant {
     color: black;
     margin: 8px;
